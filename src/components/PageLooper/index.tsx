@@ -93,12 +93,12 @@ const PageLooper: React.FC = () => {
             <Box
                 sx={{
                     position: "fixed",
-                    bottom: 10,
+                    bottom: -310,
                     left: 10,
-                    width: 80,
-                    height: 80,
-                    borderRadius: "16px",
-                    background: "linear-gradient(135deg, #1e3519ff, #06a70eff)",
+                    width: 500,
+                    height: 500,
+                    borderRadius: 500,
+                    background: "linear-gradient(45deg, #0e160cff, #06aa0eff)",
                     zIndex: -1,
                 }}
             />
@@ -109,8 +109,7 @@ const PageLooper: React.FC = () => {
                 sx={{
                     position: "fixed",
                     top: 10,
-                    left: "50%",
-                    transform: "translateX(-50%)",
+                    right: 10,
                     px: 2,
                     py: 1,
                     borderRadius: "md",
