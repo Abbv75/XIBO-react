@@ -73,7 +73,11 @@ const PageContentProduitRegion: React.FC<{
                             { label: "Prix", key: "prix" },
                             { label: "Date de collecte", key: "date" },
                         ]}
-                        data={tableRows}
+                        data={tableRows.map((row) => ({
+                            marche: row.marche,
+                            prix: `${row.prix} FCFA`,
+                            date: row.date,
+                        }))}
                     />
                 </Grid>
 

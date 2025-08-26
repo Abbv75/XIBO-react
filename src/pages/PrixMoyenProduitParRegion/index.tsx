@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Sheet, Typography, Grid } from "@mui/joy";
+import { Sheet, Typography, Grid, Stack } from "@mui/joy";
 import TableCustom from "../../components/TableCustome";
 import getAllValidation from "../../service/prixMarche/getAllValidation";
 import { GET_ALL_VALIDATION_T } from "../../types";
@@ -85,12 +85,12 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
     }
 
     return (
-        <Sheet sx={{ p: 3, height: "90vh", gap: 3 }}>
+        <Stack sx={{ gap: 3, p: 3, height: "90vh" }}>
             <Typography level="h4" fontSize="2vw">
                 Prix moyen de {produit} par région
             </Typography>
 
-            <Grid container spacing={5} alignItems="center">
+            <Grid container spacing={5} flex={1} alignItems="center">
                 <Grid xs={12} md={6}>
                     <TableCustom
                         columns={[
@@ -99,7 +99,7 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                         ]}
                         data={moyennes.map((m) => ({
                             region: m.region,
-                            moyenne: m.moyenne.toFixed(2),
+                            moyenne: `${m.moyenne.toFixed(2)} FCFA`,
                         }))}
                     />
                 </Grid>
@@ -124,7 +124,7 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                     />
                 </Grid>
             </Grid>
-        </Sheet>
+        </Stack>
     );
 };
 
