@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Box, Sheet, Typography } from "@mui/joy";
 import {
     faPause,
@@ -10,9 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PAGE_T } from "../../types";
-import PrixProduitMarcheParRegion from "../../pages/PrixProduitMarcheParRegion";
 import PageLooperContext from "../../providers/PageLooperContext";
-import PrixMoyenProduitParRegion from "../../pages/PrixMoyenProduitParRegion";
 import { INITIAL_PAGES } from "../../constant";
 
 const PageLooper = () => {
