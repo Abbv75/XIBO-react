@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Table, Sheet, Typography } from "@mui/joy";
 import { Bar } from "react-chartjs-2";
-
-// Supposons que tu as un tableau PRODUCTS: Produit[]
 import getAllValidation from "../../service/prixMarche/getAllValidation";
 import { GET_ALL_VALIDATION_T } from "../../types";
 
@@ -12,14 +10,12 @@ const PrixProduitMarcheParRegion: React.FC = () => {
 
     const [produitData, setproduitData] = useState<GET_ALL_VALIDATION_T[]>([]);
 
-    // On prend le nom du produit et de la région (première occurrence)
-    const nomProduit = produitData[0].produit;
-    const nomRegion = produitData[0].region;
+    const nomProduit = produitData?.length ? produitData[0].produit : "";
+    const nomRegion = produitData?.length ? produitData[0].region : "";
 
-    // Préparer le tableau et le graphique
     const tableRows = produitData.map((p) => ({
         marche: p.marche,
-        prix: parseFloat(p.prix), // convertir en nombre si nécessaire
+        prix: parseFloat(p.prix),
     }));
 
     const chartData = {
@@ -37,14 +33,30 @@ const PrixProduitMarcheParRegion: React.FC = () => {
         let data = (await getAllValidation()) || [];
         const res = data.filter((p) => p.produit === produit);
 
-        setproduitData(res);
-    }
+        // Garder uniquement le dernier prix pour chaque marché
+        const dernierPrixParMarche: GET_ALL_VALIDATION_T[] = [];
+        const marcheMap = new Map<string, GET_ALL_VALIDATION_T>();
+
+        res.forEach((p) => {
+            const date = new Date(p.dateCollecte);
+            const exist = marcheMap.get(p.marche);
+            if (!exist || date > new Date(exist.dateCollecte)) {
+                marcheMap.set(p.marche, p);
+            }
+        });
+
+        dernierPrixParMarche.push(...marcheMap.values());
+
+        setproduitData(dernierPrixParMarche);
+    };
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [produit]);
 
-    // if (produitData.length === 0) return <Typography>Produit non trouvé</Typography>;
+    if (produitData.length === 0) {
+        return <Typography>Produit "{produit}" non trouvé ou chargement en cours...</Typography>;
+    }
 
     return (
         <Sheet
@@ -61,7 +73,6 @@ const PrixProduitMarcheParRegion: React.FC = () => {
             </Typography>
 
             <div style={{ display: "flex", gap: "2rem" }}>
-                {/* Tableau */}
                 <Table>
                     <thead>
                         <tr>
@@ -79,8 +90,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
                     </tbody>
                 </Table>
 
-                {/* Graphique */}
-                <div style={{ flex: 1 }}>
+                {/* <div style={{ flex: 1 }}>
                     <Bar
                         data={chartData}
                         options={{
@@ -89,7 +99,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
                             scales: { y: { beginAtZero: true } },
                         }}
                     />
-                </div>
+                </div> */}
             </div>
         </Sheet>
     );

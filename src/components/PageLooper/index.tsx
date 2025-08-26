@@ -29,8 +29,13 @@ const PageLooper: React.FC = () => {
     // Boucle automatique
     useEffect(() => {
         if (!isPlaying) return; // ne lance pas le timer si en pause
-        
-        const { path, duration } = PAGE_LIST[currentIndex];
+
+        let { path, duration, produitName } = PAGE_LIST[currentIndex];
+
+        if (produitName) {
+            path = path.replace("{produit}", encodeURIComponent(produitName));
+        }
+
         navigate(path);
         setTimeLeft(duration / 1000);
 
