@@ -20,6 +20,9 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 interface ProduitMoyenne {
     region: string;
     moyenne: number;
+    min: number;
+    max: number;
+    nbMarches: number;
 }
 
 const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) => {
@@ -64,20 +67,26 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
             </Typography>
 
             <Grid container spacing={5} flex={1} alignItems="center">
-                <Grid xs={12} md={6}>
+                <Grid xs={12} md={7}>
                     <TableCustom
                         columns={[
                             { label: "Région", key: "region" },
-                            { label: "Prix moyen", key: "moyenne" },
+                            { label: "Minimum", key: "minimum" },
+                            { label: "Maximum", key: "maximum" },
+                            { label: "Moyen", key: "moyenne" },
+                            { label: "Nbr marché", key: "nbMarches" },
                         ]}
                         data={moyennes.map((m) => ({
                             region: m.region,
                             moyenne: `${m.moyenne.toFixed(2)} FCFA`,
+                            minimum: `${m.min.toFixed(2)} FCFA`,
+                            maximum: `${m.max.toFixed(2)} FCFA`,
+                            nbMarches: m.nbMarches,
                         }))}
                     />
                 </Grid>
 
-                <Grid xs={12} md={6}>
+                <Grid xs={12} md={5}>
                     <Bar
                         data={{
                             labels: moyennes.map((m) => m.region),

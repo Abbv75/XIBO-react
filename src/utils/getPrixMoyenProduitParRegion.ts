@@ -1,13 +1,16 @@
 import { GET_ALL_VALIDATION_T } from "../types";
 
-interface ProduitMoyenne {
+interface ProduitMoyenneEtendue {
     region: string;
     moyenne: number;
+    min: number;
+    max: number;
+    nbMarches: number;
 }
 
-export default (res: GET_ALL_VALIDATION_T[]) => {
-    // Dernier prix par marché
+export default (res: GET_ALL_VALIDATION_T[]): ProduitMoyenneEtendue[] => {
     try {
+        // Dernier prix par marché
         const marcheMap = new Map<string, GET_ALL_VALIDATION_T>();
         res.forEach((p) => {
             const exist = marcheMap.get(p.marche);
@@ -18,25 +21,30 @@ export default (res: GET_ALL_VALIDATION_T[]) => {
 
         const dernierPrixParMarche = Array.from(marcheMap.values());
 
-        // Moyenne par région
-        const regionMap = new Map<string, { somme: number; count: number }>();
+        // Calcul min, max, moyenne, nbMarches par région
+        const regionMap = new Map<
+            string,
+            { prix: number[] }
+        >();
+
         dernierPrixParMarche.forEach((p) => {
             const prix = parseFloat(p.prix);
-            if (!regionMap.has(p.region)) regionMap.set(p.region, { somme: 0, count: 0 });
-            const entry = regionMap.get(p.region)!;
-            entry.somme += prix;
-            entry.count += 1;
+            if (!regionMap.has(p.region)) regionMap.set(p.region, { prix: [] });
+            regionMap.get(p.region)!.prix.push(prix);
         });
 
-        const moyennesParRegion: ProduitMoyenne[] = Array.from(regionMap.entries()).map(
-            ([region, { somme, count }]) => ({
+        const result: ProduitMoyenneEtendue[] = Array.from(regionMap.entries()).map(
+            ([region, { prix }]) => ({
                 region,
-                moyenne: count ? somme / count : 0,
+                min: Math.min(...prix),
+                max: Math.max(...prix),
+                moyenne: prix.reduce((a, b) => a + b, 0) / prix.length,
+                nbMarches: prix.length,
             })
         );
 
-        return moyennesParRegion
+        return result;
     } catch (error) {
-        return []
+        return [];
     }
-}
+};
