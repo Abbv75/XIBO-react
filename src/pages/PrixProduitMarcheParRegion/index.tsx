@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Sheet, Typography, Stack, Grid } from "@mui/joy";
+import { Sheet, Typography, Grid } from "@mui/joy";
 import { Bar } from "react-chartjs-2";
 import getAllValidation from "../../service/prixMarche/getAllValidation";
 import { GET_ALL_VALIDATION_T } from "../../types";
@@ -13,8 +13,9 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import TableCustom from "../../components/TableCustome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 ChartJS.register(
     CategoryScale,
@@ -33,11 +34,20 @@ const PrixProduitMarcheParRegion: React.FC = () => {
     const nomProduit = produitData?.length ? produitData[0].produit : "";
     const nomRegion = produitData?.length ? produitData[0].region : "";
 
-    const tableRows = produitData.map((p) => ({
-        marche: p.marche,
-        prix: parseFloat(p.prix),
-        date: p.dateCollecte,
-    }));
+    const tableRows = produitData.map((p) => {
+        let tendance = null;
+
+        if (p.precedent) {
+            if (parseFloat(p.prix) > parseFloat(p.precedent.prix)) tendance = <FontAwesomeIcon icon={faArrowUp} color="green" />;
+            else if (parseFloat(p.prix) < parseFloat(p.precedent.prix)) tendance = <FontAwesomeIcon icon={faArrowDown} color="red" />;
+        }
+
+        return {
+            marche: <>{tendance} {p.marche}</>,
+            prix: parseFloat(p.prix),
+            date: p.dateCollecte,
+        };
+    });
 
     const chartData = {
         labels: tableRows.map((row) => row.marche),
@@ -55,19 +65,29 @@ const PrixProduitMarcheParRegion: React.FC = () => {
         const res = data.filter((p) => p.produit === produit);
 
         // Garder uniquement le dernier prix pour chaque marché
-        const dernierPrixParMarche: GET_ALL_VALIDATION_T[] = [];
-        const marcheMap = new Map<string, GET_ALL_VALIDATION_T>();
+        let dernierPrixParMarche: GET_ALL_VALIDATION_T[] = [];
+        const marcheMap = new Map<
+            string,
+            { dernier: GET_ALL_VALIDATION_T; precedent?: GET_ALL_VALIDATION_T }
+        >();
 
         res.forEach((p) => {
             const date = new Date(p.dateCollecte);
             const exist = marcheMap.get(p.marche);
-            if (!exist || date > new Date(exist.dateCollecte)) {
-                marcheMap.set(p.marche, p);
+            if (!exist) {
+                marcheMap.set(p.marche, { dernier: p });
+            } else {
+                const dernierDate = new Date(exist.dernier.dateCollecte);
+                if (date > dernierDate) {
+                    marcheMap.set(p.marche, { dernier: p, precedent: exist.dernier });
+                }
             }
         });
 
-        //@ts-ignore
-        dernierPrixParMarche.push(...marcheMap.values());
+        dernierPrixParMarche = Array.from(marcheMap.values()).map((v) => ({
+            ...v.dernier,
+            precedent: v.precedent,
+        }));
 
         setproduitData(dernierPrixParMarche);
     };
@@ -77,7 +97,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
     }, [produit]);
 
     if (produitData.length === 0) {
-        return <Typography>Produit "{produit}" non trouvé ou chargement en cours...</Typography>;
+        return <Typography fontSize={'2.5vw'} >Produit "{produit}" non trouvé ou chargement en cours...</Typography>;
     }
 
     return (
@@ -90,7 +110,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
                 height: "90vh",
             }}
         >
-            <Typography level="h4">
+            <Typography level="h4" fontSize={'2vw'}>
                 Prix de {nomProduit} dans la région de {nomRegion}
             </Typography>
 

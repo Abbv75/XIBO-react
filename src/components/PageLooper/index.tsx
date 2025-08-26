@@ -91,7 +91,10 @@ const PageLooper: React.FC = () => {
                     zIndex: 1000,
                 }}
             >
-                <Typography level="body-lg" fontWeight="lg">
+                <Typography
+                    level="body-lg"
+                    fontWeight="lg"
+                >
                     ⏱ {timeLeft}s — Page {currentIndex + 1} / {PAGE_LIST.length}
                 </Typography>
             </Sheet>
@@ -117,16 +120,16 @@ const PageLooper: React.FC = () => {
                     <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab
                 </Typography>
                 <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowLeft} /> ← Précédent
+                    <FontAwesomeIcon icon={faArrowLeft} /> Précédent
                 </Typography>
                 <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowRight} /> → Suivant
+                    <FontAwesomeIcon icon={faArrowRight} /> Suivant
                 </Typography>
                 <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowUp} /> ↑ Dernière
+                    <FontAwesomeIcon icon={faArrowUp} /> Dernière
                 </Typography>
                 <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowDown} /> ↓ Première
+                    <FontAwesomeIcon icon={faArrowDown} /> Première
                 </Typography>
             </Sheet>
         </>

@@ -30,4 +30,5 @@ export interface GET_ALL_VALIDATION_T {
   enqueteur: string;
   numeroEnqueteur: string;
   superviseur: string;
+  precedent?: GET_ALL_VALIDATION_T;
 };

@@ -23,7 +23,6 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
         <Table>
             <TableHead
                 sx={{
-                    fontSize: '3rem',
                     bgcolor: green[900],
                     color: 'white',
                 }}
@@ -36,8 +35,8 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
                                 color: "white",
                                 fontWeight: "bold",
                                 textTransform: "uppercase",
+                                fontSize: '1.5vw',
                             }}
-
                         >{col.label}</TableCell>
                     ))}
                 </TableRow>
