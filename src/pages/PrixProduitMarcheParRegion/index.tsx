@@ -1,9 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Table, Sheet, Typography } from "@mui/joy";
+import { Sheet, Typography, Stack, Grid } from "@mui/joy";
 import { Bar } from "react-chartjs-2";
 import getAllValidation from "../../service/prixMarche/getAllValidation";
 import { GET_ALL_VALIDATION_T } from "../../types";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from "chart.js";
+import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import TableCustom from "../../components/TableCustome";
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const PrixProduitMarcheParRegion: React.FC = () => {
     const { produit } = useParams<{ produit: string }>();
@@ -16,6 +36,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
     const tableRows = produitData.map((p) => ({
         marche: p.marche,
         prix: parseFloat(p.prix),
+        date: p.dateCollecte,
     }));
 
     const chartData = {
@@ -45,6 +66,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
             }
         });
 
+        //@ts-ignore
         dernierPrixParMarche.push(...marcheMap.values());
 
         setproduitData(dernierPrixParMarche);
@@ -65,32 +87,31 @@ const PrixProduitMarcheParRegion: React.FC = () => {
                 flexDirection: "column",
                 gap: 3,
                 p: 3,
-                height: "100%",
+                height: "90vh",
             }}
         >
             <Typography level="h4">
                 Prix de {nomProduit} dans la région de {nomRegion}
             </Typography>
 
-            <div style={{ display: "flex", gap: "2rem" }}>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Marché</th>
-                            <th>Prix</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableRows.map((row, idx) => (
-                            <tr key={idx}>
-                                <td>{row.marche}</td>
-                                <td>{row.prix}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+            <Grid
+                container
+                alignItems={"center"}
+                flex={1}
+                spacing={5}
+            >
+                <Grid xs={12} md={6}>
+                    <TableCustom
+                        columns={[
+                            { label: "Marché", key: "marche" },
+                            { label: "Prix", key: "prix" },
+                            { label: "Date de collecte", key: "date" },
+                        ]}
+                        data={tableRows}
+                    />
+                </Grid>
 
-                {/* <div style={{ flex: 1 }}>
+                <Grid xs={12} md={6}>
                     <Bar
                         data={chartData}
                         options={{
@@ -99,8 +120,8 @@ const PrixProduitMarcheParRegion: React.FC = () => {
                             scales: { y: { beginAtZero: true } },
                         }}
                     />
-                </div> */}
-            </div>
+                </Grid>
+            </Grid>
         </Sheet>
     );
 };
