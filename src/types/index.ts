@@ -37,4 +37,5 @@ export interface PAGE_T {
   id: string;
   component: React.ReactNode;
   duration: number;
+  preload?: boolean;
 };

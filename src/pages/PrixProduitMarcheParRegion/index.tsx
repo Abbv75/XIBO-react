@@ -9,7 +9,6 @@ const PrixProduitMarcheParRegion: React.FC<{ produit: string }> = memo(({ produi
     const { setPages, pages,setCurrentIndex } = useContext(PageLooperContext); // pour ajouter dynamiquement des pages
     const [loading, setLoading] = useState(true);
 
-
     useEffect(() => {
         const loadData = async () => {
             const alreadyExists = pages.some((p) => p.id.startsWith(`prix-${produit}-`));
@@ -62,13 +61,20 @@ const PrixProduitMarcheParRegion: React.FC<{ produit: string }> = memo(({ produi
                 duration: 15000,
             }));
 
-            setPages((prev: any) => [...prev, ...newPages]);
+            // Supprimer la page de préchargement du produit
+            setPages((prev: PAGE_T[]) => {
+                const filtered = prev.filter(
+                    (p) => !(p.id === `PrixProduitMarcheParRegion ${produit}`)
+                );
+                return [...filtered, ...newPages];
+            });
+
             setLoading(false);
-            setCurrentIndex(2)
+            // setCurrentIndex(0)
         };
 
         loadData();
-    }, [produit, pages, setPages]);
+    }, [produit, setPages]);
 
     if (loading) {
         return (

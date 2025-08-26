@@ -13,30 +13,10 @@ import { PAGE_T } from "../../types";
 import PrixProduitMarcheParRegion from "../../pages/PrixProduitMarcheParRegion";
 import PageLooperContext from "../../providers/PageLooperContext";
 import PrixMoyenProduitParRegion from "../../pages/PrixMoyenProduitParRegion";
+import { INITIAL_PAGES } from "../../constant";
 
-const PageLooper: React.FC = () => {
-    const [pages, setPages] = useState<PAGE_T[]>([
-        {
-            id: "PrixProduitMarcheParRegion Oignon bulbe",
-            component: <PrixProduitMarcheParRegion produit="Oignon bulbe" />,
-            duration: 10000,
-        },
-        {
-            id: "PrixProduitMarcheParRegion Oignon Local",
-            component: <PrixProduitMarcheParRegion produit="Oignon Local" />,
-            duration: 10000,
-        },
-        {
-            id: "PrixMoyenProduitParRegion Oignon bulbe",
-            component: <PrixMoyenProduitParRegion produit="Oignon bulbe" />,
-            duration: 10000,
-        },
-        {
-            id: "PrixMoyenProduitParRegion Oignon Local",
-            component: <PrixMoyenProduitParRegion produit="Oignon Local" />,
-            duration: 10000,
-        },
-    ]);
+const PageLooper = () => {
+    const [pages, setPages] = useState<PAGE_T[]>(INITIAL_PAGES);
 
     const [cacheMoyennes] = useState<{ [produit: string]: any }>({});
 
