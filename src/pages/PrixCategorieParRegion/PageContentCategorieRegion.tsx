@@ -50,12 +50,12 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
     };
 
     return (
-        <Stack sx={{ gap: 3, p: 3, height: "90vh" }}>
+        <Stack sx={{ gap: 3, p: 3, }} height={'100%'}>
             <Typography level="h4" fontSize={"2vw"}>
                 Prix des produits de la catégorie "{categorie}" dans la région de {region}
             </Typography>
 
-            <Grid container flex={1} spacing={5}>
+            <Grid container flex={1} spacing={5} height={'100%'}>
                 <Grid xs={12} >
                     <TableCustom
                         columns={columns.map((col) => ({ label: col, key: col }))}

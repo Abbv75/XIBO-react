@@ -1,6 +1,7 @@
 import React from "react";
 import { Stack, Typography, Box } from "@mui/joy";
 import { IMAGES, PARTENAIRE_IMAMGE } from "../../constant";
+import { CardMedia } from "@mui/material";
 
 const PageAccueil: React.FC = () => {
     return (
@@ -10,18 +11,16 @@ const PageAccueil: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 textAlign: "center",
-                height: "100vh",
             }}
+            height="100vh"
         >
-            {/* Logo */}
-            <Box
+            <CardMedia
                 component="img"
                 src={IMAGES.logo} // Remplacer par le chemin réel de ton logo
                 alt="Logo SIMRO Cameroun"
                 sx={{ width: 200, height: "auto" }}
             />
 
-            {/* Titre principal */}
             <Typography level="h2" fontSize="2.5vw" fontWeight="lg">
                 SIMRO Cameroun
             </Typography>
@@ -32,16 +31,12 @@ const PageAccueil: React.FC = () => {
             {/* Liste des partenaires */}
             <Box sx={{ mt: 5 }}>
                 <Typography level="h4" fontWeight="md" mb={2}>
-                    Partenaires :
+                    Nos différents Partenaires
                 </Typography>
-                <Stack direction="row" spacing={4} justifyContent="center" flexWrap="wrap">
+                <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} flexWrap="wrap">
                     {PARTENAIRE_IMAMGE.map((partenaire, index) => (
-                        <Box component="img" src={partenaire} alt={`Partenaire ${index + 1}`} key={index} sx={{ width: 120, height: "auto" }} />
+                        <CardMedia component="img" src={partenaire} alt={`Partenaire ${index + 1}`} key={index} sx={{ width: 120, height: "auto" }} />
                     ))}
-                    {/* <Box component="img" src="/assets/partenaire1.png" alt="Partenaire 1" sx={{ width: 120, height: "auto" }} /> */}
-                    {/* <Box component="img" src="/assets/partenaire2.png" alt="Partenaire 2" sx={{ width: 120, height: "auto" }} /> */}
-                    {/* <Box component="img" src="/assets/partenaire3.png" alt="Partenaire 3" sx={{ width: 120, height: "auto" }} /> */}
-                    {/* Ajouter d'autres partenaires si nécessaire */}
                 </Stack>
             </Box>
         </Stack>

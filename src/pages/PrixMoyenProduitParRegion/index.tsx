@@ -61,12 +61,12 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
     }
 
     return (
-        <Stack sx={{ gap: 3, p: 3, height: "90vh" }}>
+        <Stack sx={{ gap: 3, p: 3, height: "100%",}}>
             <Typography level="h4" fontSize="2vw">
                 Prix moyen de {produit} par région
             </Typography>
 
-            <Grid container spacing={5} flex={1} alignItems="center">
+            <Grid container spacing={5} height={'100%'} alignItems="center" >
                 <Grid xs={12} md={7}>
                     <TableCustom
                         columns={[
