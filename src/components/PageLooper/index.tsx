@@ -12,20 +12,33 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PAGE_T } from "../../types";
 import PrixProduitMarcheParRegion from "../../pages/PrixProduitMarcheParRegion";
 import PageLooperContext from "../../providers/PageLooperContext";
+import PrixMoyenProduitParRegion from "../../pages/PrixMoyenProduitParRegion";
 
 const PageLooper: React.FC = () => {
     const [pages, setPages] = useState<PAGE_T[]>([
         {
-            id: "Oignon Local",
+            id: "PrixProduitMarcheParRegion Oignon bulbe",
             component: <PrixProduitMarcheParRegion produit="Oignon bulbe" />,
             duration: 10000,
         },
         {
-            id: "Oignon Local",
+            id: "PrixProduitMarcheParRegion Oignon Local",
             component: <PrixProduitMarcheParRegion produit="Oignon Local" />,
             duration: 10000,
         },
+        {
+            id: "PrixMoyenProduitParRegion Oignon bulbe",
+            component: <PrixMoyenProduitParRegion produit="Oignon bulbe" />,
+            duration: 10000,
+        },
+        {
+            id: "PrixMoyenProduitParRegion Oignon Local",
+            component: <PrixMoyenProduitParRegion produit="Oignon Local" />,
+            duration: 10000,
+        },
     ]);
+
+    const [cacheMoyennes] = useState<{ [produit: string]: any }>({});
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
@@ -76,7 +89,12 @@ const PageLooper: React.FC = () => {
     }, [pages]);
 
     return (
-        <PageLooperContext.Provider value={{pages, setPages,setCurrentIndex }}>
+        <PageLooperContext.Provider value={{
+            pages,
+            setPages,
+            setCurrentIndex,
+            cacheMoyennes
+        }}>
 
             {/* Decorations */}
             <Box sx={{ position: "fixed", top: -280, right: -200, width: 500, height: 500, borderRadius: "50%", background: "linear-gradient(135deg, #4caf50, #ff9800)", zIndex: -1 }} />
