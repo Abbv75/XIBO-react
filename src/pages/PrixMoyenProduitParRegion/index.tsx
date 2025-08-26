@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import PageLooperContext from "../../providers/PageLooperContext";
+import getPrixMoyenProduitParRegion from "../../utils/getPrixMoyenProduitParRegion";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -32,33 +33,7 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
         const data = (await getAllValidation()) || [];
         const res = data.filter((p) => p.produit === produit);
 
-        // Dernier prix par marché
-        const marcheMap = new Map<string, GET_ALL_VALIDATION_T>();
-        res.forEach((p) => {
-            const exist = marcheMap.get(p.marche);
-            if (!exist || new Date(p.dateCollecte) > new Date(exist.dateCollecte)) {
-                marcheMap.set(p.marche, p);
-            }
-        });
-
-        const dernierPrixParMarche = Array.from(marcheMap.values());
-
-        // Moyenne par région
-        const regionMap = new Map<string, { somme: number; count: number }>();
-        dernierPrixParMarche.forEach((p) => {
-            const prix = parseFloat(p.prix);
-            if (!regionMap.has(p.region)) regionMap.set(p.region, { somme: 0, count: 0 });
-            const entry = regionMap.get(p.region)!;
-            entry.somme += prix;
-            entry.count += 1;
-        });
-
-        const moyennesParRegion: ProduitMoyenne[] = Array.from(regionMap.entries()).map(
-            ([region, { somme, count }]) => ({
-                region,
-                moyenne: count ? somme / count : 0,
-            })
-        );
+        const moyennesParRegion = getPrixMoyenProduitParRegion(res);
 
         setMoyennes(moyennesParRegion);
         setLoading(false);
