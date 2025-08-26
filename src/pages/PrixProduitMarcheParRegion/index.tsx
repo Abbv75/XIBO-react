@@ -46,11 +46,17 @@ const PrixProduitMarcheParRegion: React.FC = () => {
             marche: <>{tendance} {p.marche}</>,
             prix: parseFloat(p.prix),
             date: p.dateCollecte,
+            gaphLabel: p.marche
         };
     });
 
+    useEffect(() => {
+        console.log(tableRows);
+
+    }, [tableRows])
+
     const chartData = {
-        labels: tableRows.map((row) => row.marche),
+        labels: tableRows.map((row) => row.gaphLabel),
         datasets: [
             {
                 label: `Prix de ${nomProduit}`,
