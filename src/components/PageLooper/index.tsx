@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sheet, Typography } from "@mui/joy";
+import { Box, Sheet, Typography } from "@mui/joy";
 import {
     faPause,
     faPlay,
@@ -76,6 +76,33 @@ const PageLooper: React.FC = () => {
 
     return (
         <>
+            {/* deoration */}
+            <Box
+                sx={{
+                    position: "fixed",
+                    top: -280,
+                    right: -200,
+                    width: 500,
+                    height: 500,
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #4caf50, #ff9800)",
+                    zIndex: -1,
+                }}
+            />
+
+            <Box
+                sx={{
+                    position: "fixed",
+                    bottom: 10,
+                    left: 10,
+                    width: 80,
+                    height: 80,
+                    borderRadius: "16px",
+                    background: "linear-gradient(135deg, #1e3519ff, #06a70eff)",
+                    zIndex: -1,
+                }}
+            />
+
             {/* En haut : Timer + page info */}
             <Sheet
                 variant="soft"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Sheet, Typography, Grid } from "@mui/joy";
+import { Sheet, Typography, Grid, Stack } from "@mui/joy";
 import { Bar } from "react-chartjs-2";
 import getAllValidation from "../../service/prixMarche/getAllValidation";
 import { GET_ALL_VALIDATION_T } from "../../types";
@@ -70,7 +70,6 @@ const PrixProduitMarcheParRegion: React.FC = () => {
         let data = (await getAllValidation()) || [];
         const res = data.filter((p) => p.produit === produit);
 
-        // Garder uniquement le dernier prix pour chaque marché
         let dernierPrixParMarche: GET_ALL_VALIDATION_T[] = [];
         const marcheMap = new Map<
             string,
@@ -107,10 +106,8 @@ const PrixProduitMarcheParRegion: React.FC = () => {
     }
 
     return (
-        <Sheet
+        <Stack
             sx={{
-                display: "flex",
-                flexDirection: "column",
                 gap: 3,
                 p: 3,
                 height: "90vh",
@@ -137,7 +134,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
                     />
                 </Grid>
 
-                <Grid xs={12} md={6}>
+                <Grid xs={12} md={6} bgcolor={'white'}>
                     <Bar
                         data={chartData}
                         options={{
@@ -148,7 +145,7 @@ const PrixProduitMarcheParRegion: React.FC = () => {
                     />
                 </Grid>
             </Grid>
-        </Sheet>
+        </Stack>
     );
 };
 
