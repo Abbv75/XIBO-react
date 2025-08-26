@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useContext, memo } from "react";
-import getAllValidation from "../../service/prixMarche/getAllValidation";
 import { GET_ALL_VALIDATION_T, PAGE_T } from "../../types";
 import PageLooperContext from "../../providers/PageLooperContext";
 import PageContentProduitRegion from "./PageContentProduitRegion";
 import { Typography } from "@mui/joy";
 
 const PrixProduitMarcheParRegion: React.FC<{ produit: string }> = memo(({ produit }) => {
-    const { setPages, pages,setCurrentIndex } = useContext(PageLooperContext); // pour ajouter dynamiquement des pages
+    const { setPages, pages, setCurrentIndex, apiData } = useContext(PageLooperContext); // pour ajouter dynamiquement des pages
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,8 +16,7 @@ const PrixProduitMarcheParRegion: React.FC<{ produit: string }> = memo(({ produi
                 return;
             }
 
-            let data = (await getAllValidation()) || [];
-            const res = data.filter((p) => p.produit === produit);
+            const res = apiData.filter((p) => p.produit === produit);
 
             // Créer un map pour le dernier prix par marché + précédent
             const marcheMap = new Map<

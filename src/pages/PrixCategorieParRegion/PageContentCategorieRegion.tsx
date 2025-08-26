@@ -55,22 +55,22 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
                 Prix des produits de la catégorie "{categorie}" dans la région de {region}
             </Typography>
 
-            <Grid container alignItems={"center"} flex={1} spacing={5}>
-                <Grid xs={12} md={6}>
+            <Grid container flex={1} spacing={5}>
+                <Grid xs={12} >
                     <TableCustom
                         columns={columns.map((col) => ({ label: col, key: col }))}
                         data={data.map((row) =>
                             Object.fromEntries(
                                 columns.map((col) => [
                                     col,
-                                    col === "marche" || col === "date" ? row[col] : row[col] ? `${row[col]} FCFA` : "-",
+                                    col === "marche" || col === "date" ? row[col] : row[col] ? `${row[col].toLocaleString()} FCFA` : "-",
                                 ])
                             )
                         )}
                     />
                 </Grid>
 
-                <Grid xs={12} md={6} bgcolor={"white"}>
+                {/* <Grid xs={12} md={6} bgcolor={"white"}>
                     <Bar
                         data={chartData}
                         options={{
@@ -79,7 +79,7 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
                             scales: { y: { beginAtZero: true } },
                         }}
                     />
-                </Grid>
+                </Grid> */}
             </Grid>
         </Stack>
     );

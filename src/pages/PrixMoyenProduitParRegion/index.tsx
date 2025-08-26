@@ -23,14 +23,13 @@ interface ProduitMoyenne {
 }
 
 const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) => {
-    const { cacheMoyennes } = useContext(PageLooperContext);
+    const { cacheMoyennes, apiData } = useContext(PageLooperContext);
 
     const [loading, setLoading] = useState(true);
     const [moyennes, setMoyennes] = useState<ProduitMoyenne[]>([]);
 
     const loadData = async () => {
-        const data = (await getAllValidation()) || [];
-        const res = data.filter((p) => p.produit === produit);
+        const res = apiData.filter((p) => p.produit === produit);
 
         const moyennesParRegion = getPrixMoyenProduitParRegion(res);
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Box, Sheet, Typography } from "@mui/joy";
+import { Box, LinearProgress, Sheet, Typography } from "@mui/joy";
 import {
     faPause,
     faPlay,
@@ -9,12 +9,15 @@ import {
     faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PAGE_T } from "../../types";
+import { GET_ALL_VALIDATION_T, PAGE_T } from "../../types";
 import PageLooperContext from "../../providers/PageLooperContext";
 import { INITIAL_PAGES } from "../../constant";
+import getAllValidation from "../../service/prixMarche/getAllValidation";
 
 const PageLooper = () => {
     const [pages, setPages] = useState<PAGE_T[]>(INITIAL_PAGES);
+
+    const [apiData, setapiData] = useState<GET_ALL_VALIDATION_T[]>([]);
 
     const [cacheMoyennes] = useState<{ [produit: string]: any }>({});
 
@@ -66,12 +69,23 @@ const PageLooper = () => {
         return () => window.removeEventListener("keydown", handleKey);
     }, [pages]);
 
+    useEffect(() => {
+        getAllValidation().then(data => data && setapiData(data))
+    }, []);
+
+    if (!apiData.length) {
+        return (
+            <LinearProgress />
+        )
+    }
+
     return (
         <PageLooperContext.Provider value={{
             pages,
             setPages,
             setCurrentIndex,
-            cacheMoyennes
+            cacheMoyennes,
+            apiData
         }}>
 
             {/* Decorations */}

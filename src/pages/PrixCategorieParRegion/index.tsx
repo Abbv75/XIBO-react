@@ -6,24 +6,23 @@ import PageLooperContext from "../../providers/PageLooperContext";
 import PageContentCategorieRegion from "./PageContentCategorieRegion";
 
 const PrixCategorieParRegion: React.FC = memo(() => {
-    const { pages, setPages, setCurrentIndex } = useContext(PageLooperContext);
+    const { pages, setPages, setCurrentIndex, apiData } = useContext(PageLooperContext);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const loadData = async () => {
-            const data = (await getAllValidation()) || [];
-            if (!data.length) {
+            if (!apiData.length) {
                 setLoading(false);
                 return;
             }
 
             // Identifier toutes les catégories présentes
-            const categories = Array.from(new Set(data.map((p) => p.categorie)));
+            const categories = Array.from(new Set(apiData.map((p) => p.categorie)));
 
             const newPages: any[] = [];
 
             categories.forEach((categorie) => {
-                const catData = data.filter((p) => p.categorie === categorie);
+                const catData = apiData.filter((p) => p.categorie === categorie);
 
                 // Map par région -> marché -> produit -> dernier prix
                 const regionMap = new Map<
@@ -80,7 +79,13 @@ const PrixCategorieParRegion: React.FC = memo(() => {
             });
 
             if (newPages.length) {
-                setPages((prev: PAGE_T[]) => [...prev, ...newPages]);
+                // Supprimer la page de préchargement du produit
+                setPages((prev: PAGE_T[]) => {
+                    const filtered = prev.filter(
+                        (p) => !(p.id === `PrixCategorieParRegion`)
+                    );
+                    return [...filtered, ...newPages];
+                });
                 // Passe à la première page ajoutée
                 setCurrentIndex(pages.length);
             }
