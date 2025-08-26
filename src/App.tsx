@@ -1,15 +1,9 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
 import PageLooper from "./components/PageLooper";
-import Router from "./Routes";
 
+// App ne gère plus de router, PageLooper devient le "navigateur interne"
 const App: React.FC = () => {
-  return (
-    <BrowserRouter>
-      <Router />
-      <PageLooper />
-    </BrowserRouter>
-  );
+  return <PageLooper />;
 };
 
 export default App;

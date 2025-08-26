@@ -1,152 +1,84 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Sheet, Typography, Grid, Stack } from "@mui/joy";
-import { Bar } from "react-chartjs-2";
+import React, { useEffect, useState, useContext, memo } from "react";
 import getAllValidation from "../../service/prixMarche/getAllValidation";
-import { GET_ALL_VALIDATION_T } from "../../types";
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from "chart.js";
-import TableCustom from "../../components/TableCustome";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { GET_ALL_VALIDATION_T, PAGE_T } from "../../types";
+import PageLooperContext from "../../providers/PageLooperContext";
+import PageContentProduitRegion from "./PageContentProduitRegion";
+import { Typography } from "@mui/joy";
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
+const PrixProduitMarcheParRegion: React.FC<{ produit: string }> = memo(({ produit }) => {
+    const { setPages, pages,setCurrentIndex } = useContext(PageLooperContext); // pour ajouter dynamiquement des pages
+    const [loading, setLoading] = useState(true);
 
-const PrixProduitMarcheParRegion: React.FC = () => {
-    const { produit } = useParams<{ produit: string }>();
-
-    const [produitData, setproduitData] = useState<GET_ALL_VALIDATION_T[]>([]);
-
-    const nomProduit = produitData?.length ? produitData[0].produit : "";
-    const nomRegion = produitData?.length ? produitData[0].region : "";
-
-    const tableRows = produitData.map((p) => {
-        let tendance = null;
-
-        if (p.precedent) {
-            if (parseFloat(p.prix) > parseFloat(p.precedent.prix)) tendance = <FontAwesomeIcon icon={faArrowUp} color="green" />;
-            else if (parseFloat(p.prix) < parseFloat(p.precedent.prix)) tendance = <FontAwesomeIcon icon={faArrowDown} color="red" />;
-        }
-
-        return {
-            marche: <>{tendance} {p.marche}</>,
-            prix: parseFloat(p.prix),
-            date: p.dateCollecte,
-            gaphLabel: p.marche
-        };
-    });
 
     useEffect(() => {
-        console.log(tableRows);
-
-    }, [tableRows])
-
-    const chartData = {
-        labels: tableRows.map((row) => row.gaphLabel),
-        datasets: [
-            {
-                label: `Prix de ${nomProduit}`,
-                data: tableRows.map((row) => row.prix),
-                backgroundColor: "rgba(54, 162, 235, 0.6)",
-            },
-        ],
-    };
-
-    const loadData = async () => {
-        let data = (await getAllValidation()) || [];
-        const res = data.filter((p) => p.produit === produit);
-
-        let dernierPrixParMarche: GET_ALL_VALIDATION_T[] = [];
-        const marcheMap = new Map<
-            string,
-            { dernier: GET_ALL_VALIDATION_T; precedent?: GET_ALL_VALIDATION_T }
-        >();
-
-        res.forEach((p) => {
-            const date = new Date(p.dateCollecte);
-            const exist = marcheMap.get(p.marche);
-            if (!exist) {
-                marcheMap.set(p.marche, { dernier: p });
-            } else {
-                const dernierDate = new Date(exist.dernier.dateCollecte);
-                if (date > dernierDate) {
-                    marcheMap.set(p.marche, { dernier: p, precedent: exist.dernier });
-                }
+        const loadData = async () => {
+            const alreadyExists = pages.some((p) => p.id.startsWith(`prix-${produit}-`));
+            if (alreadyExists) {
+                setLoading(false);
+                return;
             }
-        });
 
-        dernierPrixParMarche = Array.from(marcheMap.values()).map((v) => ({
-            ...v.dernier,
-            precedent: v.precedent,
-        }));
+            let data = (await getAllValidation()) || [];
+            const res = data.filter((p) => p.produit === produit);
 
-        setproduitData(dernierPrixParMarche);
-    };
+            // Créer un map pour le dernier prix par marché + précédent
+            const marcheMap = new Map<
+                string,
+                { dernier: GET_ALL_VALIDATION_T; precedent?: GET_ALL_VALIDATION_T }
+            >();
 
-    useEffect(() => {
+            res.forEach((p) => {
+                const date = new Date(p.dateCollecte);
+                const exist = marcheMap.get(p.marche);
+                if (!exist) {
+                    marcheMap.set(p.marche, { dernier: p });
+                } else {
+                    const dernierDate = new Date(exist.dernier.dateCollecte);
+                    if (date > dernierDate) {
+                        marcheMap.set(p.marche, { dernier: p, precedent: exist.dernier });
+                    }
+                }
+            });
+
+            const dernierPrixParMarche = Array.from(marcheMap.values()).map((v) => ({
+                ...v.dernier,
+                precedent: v.precedent,
+            }));
+
+            // Récupérer toutes les régions distinctes pour ce produit
+            const regions = Array.from(new Set(dernierPrixParMarche.map((p) => p.region)))
+                .filter((region) => dernierPrixParMarche.some((p) => p.region === region));
+
+            // Créer toutes les pages dynamiques **avant de lancer le PageLooper**
+            const newPages = regions.map((region) => ({
+                id: `prix-${produit}-${region}`,
+                component: (
+                    <PageContentProduitRegion
+                        produit={produit}
+                        region={region}
+                        data={dernierPrixParMarche.filter((p) => p.region === region)}
+                    />
+                ),
+                duration: 15000,
+            }));
+
+            setPages((prev: any) => [...prev, ...newPages]);
+            setLoading(false);
+            setCurrentIndex(2)
+        };
+
         loadData();
-    }, [produit]);
+    }, [produit, pages, setPages]);
 
-    if (produitData.length === 0) {
-        return <Typography fontSize={'2.5vw'} >Produit "{produit}" non trouvé ou chargement en cours...</Typography>;
+    if (loading) {
+        return (
+            <Typography fontSize={"2vw"} textAlign="center" sx={{ mt: 10 }}>
+                Chargement des pages pour "{produit}"...
+            </Typography>
+        );
     }
 
-    return (
-        <Stack
-            sx={{
-                gap: 3,
-                p: 3,
-                height: "90vh",
-            }}
-        >
-            <Typography level="h4" fontSize={'2vw'}>
-                Prix de {nomProduit} dans la région de {nomRegion}
-            </Typography>
-
-            <Grid
-                container
-                alignItems={"center"}
-                flex={1}
-                spacing={5}
-            >
-                <Grid xs={12} md={6}>
-                    <TableCustom
-                        columns={[
-                            { label: "Marché", key: "marche" },
-                            { label: "Prix", key: "prix" },
-                            { label: "Date de collecte", key: "date" },
-                        ]}
-                        data={tableRows}
-                    />
-                </Grid>
-
-                <Grid xs={12} md={6} bgcolor={'white'}>
-                    <Bar
-                        data={chartData}
-                        options={{
-                            responsive: true,
-                            plugins: { legend: { display: false } },
-                            scales: { y: { beginAtZero: true } },
-                        }}
-                    />
-                </Grid>
-            </Grid>
-        </Stack>
-    );
-};
+    return null; // Ce composant ne rend rien, il sert à créer les pages dynamiquement
+});
 
 export default PrixProduitMarcheParRegion;

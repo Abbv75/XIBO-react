@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { Box, Sheet, Typography } from "@mui/joy";
 import {
     faPause,
@@ -10,42 +9,45 @@ import {
     faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PAGE_LIST } from "../../constant";
+import { PAGE_T } from "../../types";
+import PrixProduitMarcheParRegion from "../../pages/PrixProduitMarcheParRegion";
+import PageLooperContext from "../../providers/PageLooperContext";
 
 const PageLooper: React.FC = () => {
-    const navigate = useNavigate();
+    const [pages, setPages] = useState<PAGE_T[]>([
+        {
+            id: "Oignon Local",
+            component: <PrixProduitMarcheParRegion produit="Oignon bulbe" />,
+            duration: 10000,
+        },
+        {
+            id: "Oignon Local",
+            component: <PrixProduitMarcheParRegion produit="Oignon Local" />,
+            duration: 10000,
+        },
+    ]);
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
-    const [timeLeft, setTimeLeft] = useState(PAGE_LIST[0].duration / 1000); // en secondes
+    const [timeLeft, setTimeLeft] = useState(pages[0].duration / 1000);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Navigation helpers
-    const nextPage = () => setCurrentIndex((prev) => (prev + 1) % PAGE_LIST.length);
-    const prevPage = () =>
-        setCurrentIndex((prev) => (prev === 0 ? PAGE_LIST.length - 1 : prev - 1));
+    const nextPage = () => setCurrentIndex((prev) => (prev + 1) % pages.length);
+    const prevPage = () => setCurrentIndex((prev) => (prev === 0 ? pages.length - 1 : prev - 1));
     const firstPage = () => setCurrentIndex(0);
-    const lastPage = () => setCurrentIndex(PAGE_LIST.length - 1);
+    const lastPage = () => setCurrentIndex(pages.length - 1);
 
-    // Boucle automatique
     useEffect(() => {
-        if (!isPlaying) return; // ne lance pas le timer si en pause
+        if (!isPlaying || !pages[currentIndex]) return;
 
-        let { path, duration, produitName } = PAGE_LIST[currentIndex];
-
-        if (produitName) {
-            path = path.replace("{produit}", encodeURIComponent(produitName));
-        }
-
-        navigate(path);
+        const duration = pages[currentIndex].duration;
         setTimeLeft(duration / 1000);
-
-        if (!isPlaying) return;
 
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => {
                 if (prev <= 1) {
                     nextPage();
-                    return duration / 1000; // reset du timer
+                    return duration / 1000;
                 }
                 return prev - 1;
             });
@@ -54,9 +56,8 @@ const PageLooper: React.FC = () => {
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
-    }, [currentIndex, isPlaying, navigate]);
+    }, [currentIndex, isPlaying, pages]);
 
-    // Gestion du clavier
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
             switch (e.key) {
@@ -72,93 +73,36 @@ const PageLooper: React.FC = () => {
 
         window.addEventListener("keydown", handleKey);
         return () => window.removeEventListener("keydown", handleKey);
-    }, []);
+    }, [pages]);
 
     return (
-        <>
-            {/* deoration */}
-            <Box
-                sx={{
-                    position: "fixed",
-                    top: -280,
-                    right: -200,
-                    width: 500,
-                    height: 500,
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #4caf50, #ff9800)",
-                    zIndex: -1,
-                }}
-            />
+        <PageLooperContext.Provider value={{pages, setPages,setCurrentIndex }}>
 
-            <Box
-                sx={{
-                    position: "fixed",
-                    bottom: -310,
-                    left: 10,
-                    width: 500,
-                    height: 500,
-                    borderRadius: 500,
-                    background: "linear-gradient(45deg, #0e160cff, #06aa0eff)",
-                    zIndex: -1,
-                }}
-            />
+            {/* Decorations */}
+            <Box sx={{ position: "fixed", top: -280, right: -200, width: 500, height: 500, borderRadius: "50%", background: "linear-gradient(135deg, #4caf50, #ff9800)", zIndex: -1 }} />
+            <Box sx={{ position: "fixed", bottom: -310, left: 10, width: 500, height: 500, borderRadius: 500, background: "linear-gradient(45deg, #0e160cff, #06aa0eff)", zIndex: -1 }} />
 
-            {/* En haut : Timer + page info */}
-            <Sheet
-                variant="soft"
-                sx={{
-                    position: "fixed",
-                    top: 10,
-                    right: 10,
-                    px: 2,
-                    py: 1,
-                    borderRadius: "md",
-                    boxShadow: "sm",
-                    zIndex: 1000,
-                }}
-            >
-                <Typography
-                    level="body-lg"
-                    fontWeight="lg"
-                >
-                    ⏱ {timeLeft}s — Page {currentIndex + 1} / {PAGE_LIST.length}
+            {/* Timer + page info */}
+            <Sheet variant="soft" sx={{ position: "fixed", top: 10, right: 10, px: 2, py: 1, borderRadius: "md", boxShadow: "sm", zIndex: 1000 }}>
+                <Typography level="body-lg" fontWeight="lg">
+                    ⏱ {timeLeft}s — Page {currentIndex + 1} / {pages.length}
                 </Typography>
             </Sheet>
 
-            {/* En bas : Guide des actions clavier */}
-            <Sheet
-                variant="soft"
-                sx={{
-                    position: "fixed",
-                    bottom: 10,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    display: "flex",
-                    gap: 3,
-                    px: 3,
-                    py: 2,
-                    borderRadius: "md",
-                    boxShadow: "sm",
-                    zIndex: 1000,
-                }}
-            >
-                <Typography level="body-md">
-                    <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab
-                </Typography>
-                <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowLeft} /> Précédent
-                </Typography>
-                <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowRight} /> Suivant
-                </Typography>
-                <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowUp} /> Dernière
-                </Typography>
-                <Typography level="body-md">
-                    <FontAwesomeIcon icon={faArrowDown} /> Première
-                </Typography>
+            {/* Actions clavier */}
+            <Sheet variant="soft" sx={{ position: "fixed", bottom: 10, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 3, px: 3, py: 2, borderRadius: "md", boxShadow: "sm", zIndex: 1000 }}>
+                <Typography level="body-md"><FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab</Typography>
+                <Typography level="body-md"><FontAwesomeIcon icon={faArrowLeft} /> Précédent</Typography>
+                <Typography level="body-md"><FontAwesomeIcon icon={faArrowRight} /> Suivant</Typography>
+                <Typography level="body-md"><FontAwesomeIcon icon={faArrowUp} /> Dernière</Typography>
+                <Typography level="body-md"><FontAwesomeIcon icon={faArrowDown} /> Première</Typography>
             </Sheet>
-        </>
+
+            {/* Affichage de la page courante */}
+            <Box sx={{ width: "100%", height: "100%" }}>
+                {pages[currentIndex]?.component}
+            </Box>
+        </PageLooperContext.Provider>
     );
 };
 

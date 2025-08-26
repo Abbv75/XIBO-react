@@ -32,3 +32,9 @@ export interface GET_ALL_VALIDATION_T {
   superviseur: string;
   precedent?: GET_ALL_VALIDATION_T;
 };
+
+export interface PAGE_T {
+  id: string;
+  component: React.ReactNode;
+  duration: number;
+};
