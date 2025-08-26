@@ -31,33 +31,43 @@ const PageContentProduitRegion: React.FC<{
     region: string;
     data: GET_ALL_VALIDATION_T[];
 }> = ({ produit, region, data }) => {
-    const tableRows = data.map((p) => {
-        let tendance = null;
-        if (p.precedent) {
-            if (parseFloat(p.prix) > parseFloat(p.precedent.prix))
-                tendance = <FontAwesomeIcon icon={faArrowUp} color="green" />;
-            else if (parseFloat(p.prix) < parseFloat(p.precedent.prix))
-                tendance = <FontAwesomeIcon icon={faArrowDown} color="red" />;
-        }
+    // Trier les marchés pour l'affichage
+    const marches = data.map((p) => p.marche);
 
-        return {
-            marche: <>{tendance} {p.marche}</>,
-            prix: parseFloat(p.prix),
-            date: p.dateCollecte,
-            gaphLabel: p.marche,
-        };
-    });
-
-    const chartData = {
-        labels: tableRows.map((row) => row.gaphLabel),
-        datasets: [
-            {
-                label: `Prix de ${produit}`,
-                data: tableRows.map((row) => row.prix),
-                backgroundColor: "rgba(54, 162, 235, 0.6)",
-            },
-        ],
-    };
+    // Préparer les lignes du tableau
+    const tableRows = [
+        {
+            label: "Prix actuel",
+            values: data.map((p) => parseFloat(p.prix).toLocaleString() + " FCFA"),
+        },
+        {
+            label: "Date actuel",
+            values: data.map((p) => p.dateCollecte),
+        },
+        {
+            label: "Prix précédent",
+            values: data.map((p) =>
+                p.precedent ? parseFloat(p.precedent.prix).toLocaleString() + " FCFA" : "-"
+            ),
+        },
+        {
+            label: "Date précédente",
+            values: data.map((p) =>
+                p.precedent ? p.precedent.dateCollecte : "-"
+            ),
+        },
+        {
+            label: "Evolution %",
+            values: data.map((p) => {
+                if (!p.precedent) return "-";
+                const prev = parseFloat(p.precedent.prix);
+                const curr = parseFloat(p.prix);
+                const diff = ((curr - prev) / prev) * 100;
+                const arrow = diff > 0 ? "⬆️" : diff < 0 ? "⬇️" : "";
+                return `${arrow} ${Math.abs(diff).toFixed(2)}%`;
+            }),
+        },
+    ];
 
     return (
         <Stack sx={{ gap: 3, p: 3, height: "90vh" }}>
@@ -65,35 +75,26 @@ const PageContentProduitRegion: React.FC<{
                 Prix de {produit} dans la région de {region}
             </Typography>
 
-            <Grid container alignItems={"center"} flex={1} spacing={5}>
-                <Grid xs={12} md={6}>
+            <Grid container spacing={5} flex={1} alignItems="center">
+                <Grid xs={12}>
                     <TableCustom
                         columns={[
-                            { label: "Marché", key: "marche" },
-                            { label: "Prix", key: "prix" },
-                            { label: "Date de collecte", key: "date" },
+                            { label: "#", key: "label" },
+                            ...marches.map((m) => ({ label: m, key: m })),
                         ]}
-                        data={tableRows.map((row) => ({
-                            marche: row.marche,
-                            prix: `${row.prix} FCFA`,
-                            date: row.date,
-                        }))}
-                    />
-                </Grid>
-
-                <Grid xs={12} md={6} bgcolor={"white"}>
-                    <Bar
-                        data={chartData}
-                        options={{
-                            responsive: true,
-                            plugins: { legend: { display: false } },
-                            scales: { y: { beginAtZero: true } },
-                        }}
+                        data={tableRows.map((row) => {
+                            const obj: any = { label: row.label };
+                            row.values.forEach((v, i) => {
+                                obj[marches[i]] = v;
+                            });
+                            return obj;
+                        })}
                     />
                 </Grid>
             </Grid>
         </Stack>
     );
 };
+
 
 export default PageContentProduitRegion;
