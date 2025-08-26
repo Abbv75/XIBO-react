@@ -25,12 +25,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  padding: 0;
+  margin: 0;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
   color: rgba(0, 0, 0, 0.432);
 }
 
-a{
+a {
   text-decoration: none;
 }
