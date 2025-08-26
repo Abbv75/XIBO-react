@@ -56,7 +56,7 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
                             <TableCell
                                 key={col.key}
                                 sx={{
-                                    fontSize: "0.95rem",
+                                    fontSize: "1.2vw",
                                     paddingY: 1.5,
                                     paddingX: 2,
                                 }}
