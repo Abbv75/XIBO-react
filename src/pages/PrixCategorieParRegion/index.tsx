@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext, memo } from "react";
 import { Typography } from "@mui/joy";
-import getAllValidation from "../../service/prixMarche/getAllValidation";
 import { PAGE_T } from "../../types";
 import PageLooperContext from "../../providers/PageLooperContext";
 import PageContentCategorieRegion from "./PageContentCategorieRegion";
@@ -86,22 +85,12 @@ const PrixCategorieParRegion: React.FC = memo(() => {
                     );
                     return [...filtered, ...newPages];
                 });
-                // Passe à la première page ajoutée
-                setCurrentIndex(pages.length);
             }
             setLoading(false);
         };
 
         loadData();
     }, [pages, setPages, setCurrentIndex]);
-
-    if (loading) {
-        return (
-            <Typography fontSize="2vw" textAlign="center" sx={{ mt: 10 }}>
-                Chargement des pages par catégorie et région...
-            </Typography>
-        );
-    }
 
     return null;
 });

@@ -35,8 +35,8 @@ const Header: React.FC = () => {
 
             {/* Logos bailleurs / partenaires */}
             <Stack direction="row" spacing={2}>
-                <Box component="img" src="/assets/bailleur1.png" alt="Bailleur 1" sx={{ height: 50, width: "auto" }} />
-                <Box component="img" src="/assets/bailleur2.png" alt="Bailleur 2" sx={{ height: 50, width: "auto" }} />
+                <Box component="img" src={IMAGES.logo_padfa} alt="Bailleur 1" sx={{ height: 50, width: "auto" }} />
+                {/* <Box component="img" src="/assets/bailleur2.png" alt="Bailleur 2" sx={{ height: 50, width: "auto" }} /> */}
                 {/* Ajouter d'autres bailleurs si nécessaire */}
             </Stack>
         </Stack>

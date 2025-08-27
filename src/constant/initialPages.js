@@ -1,4 +1,4 @@
-import PageAccueil from "../pages/PageAccueil/PageAccueil";
+import PageAccueil from "../pages/PageAccueil";
 import PrixCategorieParRegion from "../pages/PrixCategorieParRegion";
 import PrixMoyenProduitParRegion from "../pages/PrixMoyenProduitParRegion";
 import PrixProduitMarcheParRegion from "../pages/PrixProduitMarcheParRegion";
@@ -7,7 +7,7 @@ export default [
     {
         id: "accueil",
         component: <PageAccueil />,
-        duration: 300000,
+        duration: 30000,
     },
     {
         id: "PrixProduitMarcheParRegion Oignon bulbe",

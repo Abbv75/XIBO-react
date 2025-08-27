@@ -14,6 +14,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import PageLooperContext from "../../providers/PageLooperContext";
 import getPrixMoyenProduitParRegion from "../../utils/getPrixMoyenProduitParRegion";
+import { green, grey } from "@mui/material/colors";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -61,9 +62,19 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
     }
 
     return (
-        <Stack sx={{ gap: 3, p: 3, height: "100%",}}>
-            <Typography level="h4" fontSize="2vw">
-                Prix moyen de {produit} par région
+        <Stack sx={{ gap: 3, p: 3, height: "100%", }}>
+            <Typography
+                level="h4"
+                fontSize={"2vw"}
+                textColor={grey[700]}
+                fontWeight={300}
+            >
+                Prix moyen de
+                {` `}<Typography
+                    fontWeight={700}
+                    textColor={green[900]}
+                >{produit}</Typography> {` `}
+                par région
             </Typography>
 
             <Grid container spacing={5} height={'100%'} alignItems="center" >

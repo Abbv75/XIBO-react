@@ -14,6 +14,7 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
+import { green, grey, red } from "@mui/material/colors";
 
 ChartJS.register(
     CategoryScale,
@@ -51,8 +52,23 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
 
     return (
         <Stack sx={{ gap: 3, p: 3, }} height={'100%'}>
-            <Typography level="h4" fontSize={"2vw"}>
-                Prix des produits de la catégorie "{categorie}" dans la région de {region}
+            <Typography
+                level="h4"
+                fontSize={"2vw"}
+                textColor={grey[700]}
+                fontWeight={300}
+            >
+                 Prix des produits de la catégorie
+                {` `}<Typography
+                    fontWeight={700}
+                    textColor={green[900]}
+                >"{categorie}"</Typography> {` `}
+                dans la région de
+                {` `}
+                <Typography
+                    fontWeight={700}
+                    textColor={red[900]}
+                >{region}</Typography>
             </Typography>
 
             <Grid container flex={1} spacing={5} height={'100%'}>

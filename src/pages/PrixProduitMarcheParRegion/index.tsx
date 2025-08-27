@@ -1,20 +1,15 @@
-import React, { useEffect, useState, useContext, memo } from "react";
+import React, { useEffect, useContext, memo } from "react";
 import { GET_ALL_VALIDATION_T, PAGE_T } from "../../types";
 import PageLooperContext from "../../providers/PageLooperContext";
 import PageContentProduitRegion from "./PageContentProduitRegion";
-import { Typography } from "@mui/joy";
 
 const PrixProduitMarcheParRegion: React.FC<{ produit: string }> = memo(({ produit }) => {
-    const { setPages, pages, setCurrentIndex, apiData } = useContext(PageLooperContext); // pour ajouter dynamiquement des pages
-    const [loading, setLoading] = useState(true);
+    const { setPages, pages, apiData } = useContext(PageLooperContext); // pour ajouter dynamiquement des pages
 
     useEffect(() => {
         const loadData = async () => {
             const alreadyExists = pages.some((p) => p.id.startsWith(`prix-${produit}-`));
-            if (alreadyExists) {
-                setLoading(false);
-                return;
-            }
+            if (alreadyExists) return;
 
             const res = apiData.filter((p) => p.produit === produit);
 
@@ -67,20 +62,10 @@ const PrixProduitMarcheParRegion: React.FC<{ produit: string }> = memo(({ produi
                 return [...filtered, ...newPages];
             });
 
-            setLoading(false);
-            // setCurrentIndex(0)
         };
 
         loadData();
     }, [produit, setPages]);
-
-    if (loading) {
-        return (
-            <Typography fontSize={"2vw"} textAlign="center" sx={{ mt: 10 }}>
-                Chargement des pages pour "{produit}"...
-            </Typography>
-        );
-    }
 
     return null; // Ce composant ne rend rien, il sert à créer les pages dynamiquement
 });

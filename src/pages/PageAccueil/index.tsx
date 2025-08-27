@@ -2,6 +2,7 @@ import React from "react";
 import { Stack, Typography, Box } from "@mui/joy";
 import { IMAGES, PARTENAIRE_IMAMGE } from "../../constant";
 import { CardMedia } from "@mui/material";
+import ChargeurDePage from "./ChargeurDePage";
 
 const PageAccueil: React.FC = () => {
     return (
@@ -14,6 +15,7 @@ const PageAccueil: React.FC = () => {
             }}
             height="100vh"
         >
+            <ChargeurDePage/>            
             <CardMedia
                 component="img"
                 src={IMAGES.logo} // Remplacer par le chemin réel de ton logo
