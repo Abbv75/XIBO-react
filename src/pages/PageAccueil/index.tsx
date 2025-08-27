@@ -15,7 +15,7 @@ const PageAccueil: React.FC = () => {
             }}
             height="100vh"
         >
-            <ChargeurDePage/>            
+            <ChargeurDePage />
             <CardMedia
                 component="img"
                 src={IMAGES.logo} // Remplacer par le chemin réel de ton logo
@@ -37,7 +37,13 @@ const PageAccueil: React.FC = () => {
                 </Typography>
                 <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} flexWrap="wrap">
                     {PARTENAIRE_IMAMGE.map((partenaire, index) => (
-                        <CardMedia component="img" src={partenaire} alt={`Partenaire ${index + 1}`} key={index} sx={{ width: 120, height: "auto" }} />
+                        <CardMedia
+                            component="img"
+                            src={partenaire}
+                            alt={`Partenaire ${index + 1}`}
+                            key={index}
+                            sx={{ width: 120, height: "auto", objectFit:'contain' }}
+                        />
                     ))}
                 </Stack>
             </Box>
