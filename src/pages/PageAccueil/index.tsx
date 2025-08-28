@@ -16,12 +16,21 @@ const PageAccueil: React.FC = () => {
             height="100vh"
         >
             <ChargeurDePage />
-            <CardMedia
-                component="img"
-                src={IMAGES.logo} // Remplacer par le chemin réel de ton logo
-                alt="Logo SIMRO Cameroun"
-                sx={{ width: 200, height: "auto" }}
-            />
+            
+            <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} flexWrap="wrap">
+                <CardMedia
+                    component="img"
+                    src={IMAGES.logo} // Remplacer par le chemin réel de ton logo
+                    alt="Logo SIMRO Cameroun"
+                    sx={{ width: 200, height: "auto", objectFit: 'contain' }}
+                />
+                <CardMedia
+                    component="img"
+                    src={IMAGES.logo_padfa} // Remplacer par le chemin réel de ton logo
+                    alt="Logo SIMRO Cameroun"
+                    sx={{ width: 200, height: "auto", objectFit: 'contain' }}
+                />
+            </Stack>
 
             <Typography level="h2" fontSize="2.5vw" fontWeight="lg">
                 SIMRO Cameroun
@@ -42,7 +51,7 @@ const PageAccueil: React.FC = () => {
                             src={partenaire}
                             alt={`Partenaire ${index + 1}`}
                             key={index}
-                            sx={{ width: 120, height: "auto", objectFit:'contain' }}
+                            sx={{ width: 120, height: "auto", objectFit: 'contain' }}
                         />
                     ))}
                 </Stack>
