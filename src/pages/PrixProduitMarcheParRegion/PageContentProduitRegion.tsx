@@ -15,6 +15,8 @@ import {
     Legend,
 } from "chart.js";
 import { green, grey, orange, red } from "@mui/material/colors";
+import formatDateToDDMMYYYY from "../../utils/formatDateToDDMMYYYY";
+import { getPrixProduitMarcheParRegion } from "../../utils/getPrixProduitMarcheParRegion";
 
 ChartJS.register(
     CategoryScale,
@@ -25,47 +27,59 @@ ChartJS.register(
     Legend
 );
 
+// Définir la nouvelle interface pour les données entrantes du composant
+interface MarcheCollectes {
+    marche: string;
+    collectes: GET_ALL_VALIDATION_T[];
+}
 
-// Composant qui affiche tableau + graphique pour une région
 const PageContentProduitRegion: React.FC<{
     produit: string;
     region: string;
-    data: GET_ALL_VALIDATION_T[];
+    data: MarcheCollectes[]; // La donnée reçue est un tableau de MarcheCollectes
 }> = ({ produit, region, data }) => {
-    // Trier les marchés pour l'affichage
-    const marches = data.map((p) => p.marche);
+    // Utiliser la fonction utilitaire pour traiter les données et obtenir les informations nécessaires
+    const processedData = getPrixProduitMarcheParRegion(data);
 
-    // Préparer les lignes du tableau
+    // Trier les marchés pour l'affichage
+    const marches = processedData.map((p) => p.marche);
+
+    // Préparer les lignes du tableau avec les données traitées
     const tableRows = [
         {
             label: "Prix actuel",
-            values: data.map((p) => parseFloat(p.prix).toLocaleString() + " FCFA"),
+            values: processedData.map((p) =>
+                p.prixActuel !== null ? p.prixActuel.toLocaleString() + " FCFA" : "-"
+            ),
         },
         {
-            label: "Date actuel",
-            values: data.map((p) => p.dateCollecte),
+            label: "Date actuelle",
+            values: processedData.map((p) => formatDateToDDMMYYYY(p.dateActuelle) || "-"),
+        },
+        {
+            label: "Nbr de collectes actuel",
+            values: processedData.map((p) => (p.nbrCollecteActuel !== null ? p.nbrCollecteActuel.toString() : "-")),
         },
         {
             label: "Prix précédent",
-            values: data.map((p) =>
-                p.precedent ? parseFloat(p.precedent.prix).toLocaleString() + " FCFA" : "-"
+            values: processedData.map((p) =>
+                p.prixPrecedent !== null ? p.prixPrecedent.toLocaleString() + " FCFA" : "-"
             ),
         },
         {
             label: "Date précédente",
-            values: data.map((p) =>
-                p.precedent ? p.precedent.dateCollecte : "-"
-            ),
+            values: processedData.map((p) => formatDateToDDMMYYYY(p.datePrecedente) || "-"),
+        },
+        {
+            label: "Nbr de collectes précédent",
+            values: processedData.map((p) => (p.nbrCollectePrecedente !== null ? p.nbrCollectePrecedente.toString() : "-")),
         },
         {
             label: "Evolution %",
-            values: data.map((p) => {
-                if (!p.precedent) return "-";
-                const prev = parseFloat(p.precedent.prix);
-                const curr = parseFloat(p.prix);
-                const diff = ((curr - prev) / prev) * 100;
-                const arrow = diff > 0 ? "⬆️" : diff < 0 ? "⬇️" : "";
-                return `${arrow} ${Math.abs(diff).toFixed(2)}%`;
+            values: processedData.map((p) => {
+                if (p.evolution === null) return "-";
+                const arrow = p.evolution > 0 ? "⬆️" : p.evolution < 0 ? "⬇️" : "";
+                return `${arrow} ${Math.abs(p.evolution).toFixed(2)}%`;
             }),
         },
     ];
