@@ -57,6 +57,7 @@ const PageLooper = () => {
         const handleKey = (e: KeyboardEvent) => {
             switch (e.key) {
                 case "Tab":
+                case " ":
                     e.preventDefault();
                     setIsPlaying((p) => !p); break;
                 case "ArrowRight": nextPage(); break;
