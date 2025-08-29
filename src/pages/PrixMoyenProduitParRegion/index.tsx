@@ -82,10 +82,10 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                     <TableCustom
                         columns={[
                             { label: "Région", key: "region" },
-                            { label: "Minimum", key: "minimum" },
-                            { label: "Maximum", key: "maximum" },
-                            { label: "Moyen", key: "moyenne" },
-                            { label: "Nbr marché", key: "nbMarches" },
+                            { label: "Minimum", key: "minimum", center: true },
+                            { label: "Maximum", key: "maximum", center: true },
+                            { label: "Moyen", key: "moyenne", center: true },
+                            { label: "Nbr marché", key: "nbMarches", center: true },
                         ]}
                         data={moyennes.map((m) => ({
                             region: m.region,

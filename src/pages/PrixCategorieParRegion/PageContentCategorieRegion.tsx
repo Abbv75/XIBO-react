@@ -58,7 +58,7 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
                 textColor={grey[700]}
                 fontWeight={300}
             >
-                 Prix des produits de la catégorie
+                Prix des produits de la catégorie
                 {` `}<Typography
                     fontWeight={700}
                     textColor={green[900]}
@@ -74,7 +74,7 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
             <Grid container flex={1} spacing={5} height={'100%'}>
                 <Grid xs={12} >
                     <TableCustom
-                        columns={columns.map((col) => ({ label: col, key: col }))}
+                        columns={columns.map((col, index) => ({ label: col, key: col, center: !!index }))}
                         data={data.map((row) =>
                             Object.fromEntries(
                                 columns.map((col) => [

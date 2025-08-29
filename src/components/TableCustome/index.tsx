@@ -38,6 +38,7 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
                                 textTransform: "uppercase",
                                 fontSize: '1.5vw',
                             }}
+                            align={col.center ? "center" : "left"}
                         >{col.label}</TableCell>
                     ))}
                 </TableRow>
