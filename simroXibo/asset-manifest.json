@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/simroXibo/static/css/main.4c297637.css",
-    "main.js": "/simroXibo/static/js/main.1d15861e.js",
-    "static/js/453.de539f60.chunk.js": "/simroXibo/static/js/453.de539f60.chunk.js",
-    "index.html": "/simroXibo/index.html",
-    "main.4c297637.css.map": "/simroXibo/static/css/main.4c297637.css.map",
-    "main.1d15861e.js.map": "/simroXibo/static/js/main.1d15861e.js.map",
-    "453.de539f60.chunk.js.map": "/simroXibo/static/js/453.de539f60.chunk.js.map"
+    "main.css": "/php_files/simroXibo/static/css/main.4c297637.css",
+    "main.js": "/php_files/simroXibo/static/js/main.dc6a6c11.js",
+    "static/js/453.de539f60.chunk.js": "/php_files/simroXibo/static/js/453.de539f60.chunk.js",
+    "index.html": "/php_files/simroXibo/index.html",
+    "main.4c297637.css.map": "/php_files/simroXibo/static/css/main.4c297637.css.map",
+    "main.dc6a6c11.js.map": "/php_files/simroXibo/static/js/main.dc6a6c11.js.map",
+    "453.de539f60.chunk.js.map": "/php_files/simroXibo/static/js/453.de539f60.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4c297637.css",
-    "static/js/main.1d15861e.js"
+    "static/js/main.dc6a6c11.js"
   ]
 }

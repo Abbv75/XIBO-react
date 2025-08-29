@@ -1,0 +1,25 @@
+{
+  "short_name": "simroXibo",
+  "name": "le Système d'Information sur les Marchés du Riz et de l'Oignon du Cameroun",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "160x81",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "160x81"
+    },
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "160x81"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
