@@ -11,6 +11,7 @@ import { green } from "@mui/material/colors";
 interface Column {
     label: string;
     key: string;
+    center ?: boolean; 
 }
 
 interface TableCustomProps {
@@ -65,6 +66,7 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
                                         paddingY: 1.5,
                                         paddingX: 2,
                                     }}
+                                    align={col.center ? "center" : "left"}
                                 >{row[col.key]}</TableCell>
                             ))}
                         </TableRow>

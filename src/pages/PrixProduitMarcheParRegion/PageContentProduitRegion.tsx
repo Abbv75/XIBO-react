@@ -51,6 +51,7 @@ const PageContentProduitRegion: React.FC<{
             values: processedData.map((p) =>
                 p.prixActuel !== null ? Math.round(p.prixActuel).toLocaleString() + " FCFA" : "-"
             ),
+            center: true
         },
         {
             label: "Date actuelle",
@@ -112,7 +113,7 @@ const PageContentProduitRegion: React.FC<{
                     <TableCustom
                         columns={[
                             { label: "#", key: "label" },
-                            ...marches.map((m) => ({ label: m, key: m })),
+                            ...marches.map((m) => ({ label: m, key: m, center : true })),
                         ]}
                         data={tableRows.map((row) => {
                             if (row === 'gap') {
