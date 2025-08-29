@@ -1,10 +1,6 @@
 import React from "react";
 import { Typography, Grid, Stack } from "@mui/joy";
-import { Bar } from "react-chartjs-2";
-import { GET_ALL_VALIDATION_T } from "../../types";
 import TableCustom from "../../components/TableCustome";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import {
     Chart as ChartJS,
     CategoryScale,

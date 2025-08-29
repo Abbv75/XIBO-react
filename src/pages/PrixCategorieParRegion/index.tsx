@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext, memo } from "react";
-import { Typography } from "@mui/joy";
 import { PAGE_T } from "../../types";
 import PageLooperContext from "../../providers/PageLooperContext";
 import PageContentCategorieRegion from "./PageContentCategorieRegion";
