@@ -1,19 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { Box, LinearProgress, Sheet, Stack, Typography } from "@mui/joy";
-import {
-    faPause,
-    faPlay,
-    faArrowRight,
-    faArrowLeft,
-    faArrowUp,
-    faArrowDown,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GET_ALL_VALIDATION_T, PAGE_T } from "../../types";
 import PageLooperContext from "../../providers/PageLooperContext";
 import { INITIAL_PAGES } from "../../constant";
 import getAllValidation from "../../service/prixMarche/getAllValidation";
 import Header from "../Header";
+import ActionZone from "./ActionZone";
 
 const PageLooper = () => {
     const [pages, setPages] = useState<PAGE_T[]>(INITIAL_PAGES);
@@ -28,9 +20,6 @@ const PageLooper = () => {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     const nextPage = () => setCurrentIndex((prev) => (prev + 1) % pages.length);
-    const prevPage = () => setCurrentIndex((prev) => (prev === 0 ? pages.length - 1 : prev - 1));
-    const firstPage = () => setCurrentIndex(0);
-    const lastPage = () => setCurrentIndex(pages.length - 1);
 
     useEffect(() => {
         if (!isPlaying || !pages[currentIndex]) return;
@@ -53,23 +42,6 @@ const PageLooper = () => {
         };
     }, [currentIndex, isPlaying, pages]);
 
-    useEffect(() => {
-        const handleKey = (e: KeyboardEvent) => {
-            switch (e.key) {
-                case "Tab":
-                case " ":
-                    e.preventDefault();
-                    setIsPlaying((p) => !p); break;
-                case "ArrowRight": nextPage(); break;
-                case "ArrowLeft": prevPage(); break;
-                case "ArrowUp": lastPage(); break;
-                case "ArrowDown": firstPage(); break;
-            }
-        };
-
-        window.addEventListener("keydown", handleKey);
-        return () => window.removeEventListener("keydown", handleKey);
-    }, [pages]);
 
     useEffect(() => {
         getAllValidation().then(data => data && setapiData(data))
@@ -87,11 +59,14 @@ const PageLooper = () => {
             setPages,
             setCurrentIndex,
             cacheMoyennes,
-            apiData
+            apiData,
+            isPlaying,
+            setIsPlaying,
+            nextPage
         }}>
             {/* Decorations */}
             <Box sx={{ position: "fixed", top: -280, right: -200, width: 500, height: 500, borderRadius: "50%", background: "linear-gradient(135deg, #4caf50, #ff9800)", zIndex: -1 }} />
-            <Box sx={{ position: "fixed", bottom: -310, left: 10, width: 500, height: 500, borderRadius: 500, background: "linear-gradient(45deg, #0e160cff, #06aa0eff)", zIndex: -1 }} />
+            <Box sx={{ position: "fixed", bottom: -310, left: 10, width: 500, height: 500, borderRadius: '50%', background: "linear-gradient(45deg, #0e160cff, #06aa0eff)", zIndex: -1 }} />
 
             {/* Timer + page info */}
             <Sheet variant="soft" sx={{ position: "fixed", top: pages[currentIndex].id != 'accueil' ? 100 : 10, right: 10, px: 2, py: 1, borderRadius: "md", boxShadow: "sm", zIndex: 1000 }}>
@@ -100,14 +75,7 @@ const PageLooper = () => {
                 </Typography>
             </Sheet>
 
-            {/* Actions clavier */}
-            <Sheet variant="soft" sx={{ position: "fixed", bottom: 10, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 3, px: 3, py: 2, borderRadius: "md", boxShadow: "sm", zIndex: 1000 }}>
-                <Typography level="body-md"><FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab</Typography>
-                <Typography level="body-md"><FontAwesomeIcon icon={faArrowLeft} /> Précédent</Typography>
-                <Typography level="body-md"><FontAwesomeIcon icon={faArrowRight} /> Suivant</Typography>
-                <Typography level="body-md"><FontAwesomeIcon icon={faArrowUp} /> Dernière</Typography>
-                <Typography level="body-md"><FontAwesomeIcon icon={faArrowDown} /> Première</Typography>
-            </Sheet>
+            <ActionZone />
 
             {/* Affichage de la page courante */}
             <Stack
@@ -115,9 +83,7 @@ const PageLooper = () => {
                 gap={2}
                 height={'100vh'}
             >
-                {pages[currentIndex].id != 'accueil' && (
-                    <Header />
-                )}
+                {pages[currentIndex].id != 'accueil' && (<Header />)}
 
                 {pages[currentIndex]?.component}
             </Stack>
