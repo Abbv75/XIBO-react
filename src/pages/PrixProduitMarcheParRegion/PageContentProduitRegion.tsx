@@ -44,12 +44,12 @@ const PageContentProduitRegion: React.FC<{
     // Trier les marchés pour l'affichage
     const marches = processedData.map((p) => p.marche);
 
-    // Préparer les lignes du tableau avec les données traitées
+    // Préparer les lignes du tableau avec les données traitées, en incluant les "gaps"
     const tableRows = [
         {
             label: "Prix actuel",
             values: processedData.map((p) =>
-                p.prixActuel !== null ? p.prixActuel.toLocaleString() + " FCFA" : "-"
+                p.prixActuel !== null ? Math.round(p.prixActuel).toLocaleString() + " FCFA" : "-"
             ),
         },
         {
@@ -60,10 +60,11 @@ const PageContentProduitRegion: React.FC<{
             label: "Nbr de collectes actuel",
             values: processedData.map((p) => (p.nbrCollecteActuel !== null ? p.nbrCollecteActuel.toString() : "-")),
         },
+        'gap', // Ajout d'une ligne de séparation après les données actuelles
         {
             label: "Prix précédent",
             values: processedData.map((p) =>
-                p.prixPrecedent !== null ? p.prixPrecedent.toLocaleString() + " FCFA" : "-"
+                p.prixPrecedent !== null ? Math.round(p.prixPrecedent).toLocaleString() + " FCFA" : "-"
             ),
         },
         {
@@ -74,6 +75,7 @@ const PageContentProduitRegion: React.FC<{
             label: "Nbr de collectes précédent",
             values: processedData.map((p) => (p.nbrCollectePrecedente !== null ? p.nbrCollectePrecedente.toString() : "-")),
         },
+        'gap', // Ajout d'une ligne de séparation après les données précédentes
         {
             label: "Evolution %",
             values: processedData.map((p) => {
@@ -113,7 +115,13 @@ const PageContentProduitRegion: React.FC<{
                             ...marches.map((m) => ({ label: m, key: m })),
                         ]}
                         data={tableRows.map((row) => {
+                            if (row === 'gap') {
+                                return 'gap'; // Retourne la chaîne de caractères si c'est un "gap"
+                            }
+
+                            //@ts-ignore
                             const obj: any = { label: row.label };
+                            //@ts-ignore
                             row.values.forEach((v, i) => {
                                 obj[marches[i]] = v;
                             });

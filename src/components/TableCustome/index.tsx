@@ -15,7 +15,7 @@ interface Column {
 
 interface TableCustomProps {
     columns: Column[];
-    data: Record<string, any>[];
+    data: Record<string, any>[] | 'gap'[];
 }
 
 const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
@@ -42,28 +42,33 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {data.map((row, idx) => (
-                    <TableRow
-                        key={idx}
-                        sx={{
-                            backgroundColor: idx % 2 === 0 ? "#f5f5f5" : "white",
-                            "&:hover": {
-                                backgroundColor: "#e3f2fd",
-                            },
-                        }}
-                    >
-                        {columns.map((col) => (
-                            <TableCell
-                                key={col.key}
-                                sx={{
-                                    fontSize: "1.2vw",
-                                    paddingY: 1.5,
-                                    paddingX: 2,
-                                }}
-                            >{row[col.key]}</TableCell>
-                        ))}
-                    </TableRow>
-                ))}
+
+                {data.map((row, idx) => row == 'gap'
+                    ? (
+                        <TableRow sx={{ p: 20 }} children={<TableCell sx={{ border: 0 }} />} />
+                    )
+                    : (
+                        <TableRow
+                            key={idx}
+                            sx={{
+                                backgroundColor: idx % 2 === 0 ? "#f5f5f5" : "white",
+                                "&:hover": {
+                                    backgroundColor: "#e3f2fd",
+                                },
+                            }}
+                        >
+                            {columns.map((col) => (
+                                <TableCell
+                                    key={col.key}
+                                    sx={{
+                                        fontSize: "1.2vw",
+                                        paddingY: 1.5,
+                                        paddingX: 2,
+                                    }}
+                                >{row[col.key]}</TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
             </TableBody>
         </Table>
     );
