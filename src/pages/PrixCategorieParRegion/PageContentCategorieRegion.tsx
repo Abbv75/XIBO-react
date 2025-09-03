@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Typography, Grid, Stack } from "@mui/joy";
 import TableCustom from "../../components/TableCustome";
 import {
@@ -11,6 +11,11 @@ import {
     Legend,
 } from "chart.js";
 import { green, grey, red } from "@mui/material/colors";
+import { Bar } from "react-chartjs-2";
+import Marquee from "react-fast-marquee";
+import { CardMedia } from "@mui/material";
+import PageLooperContext from "../../providers/PageLooperContext";
+import getProduitImageUrl from "../../utils/getProduitImageUrl";
 
 ChartJS.register(
     CategoryScale,
@@ -35,6 +40,8 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
     columns,
     data,
 }) => {
+    const { apiData } = useContext(PageLooperContext)
+
     // Préparer les données pour le graphique : chaque produit = dataset
     const produitColumns = columns.filter((c) => c !== "marche" && c !== "date");
     const chartData = {
@@ -47,7 +54,7 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
     };
 
     return (
-        <Stack sx={{ gap: 3, p: 3, }} height={'100%'}>
+        <Stack sx={{ gap: 3, p: 3, }} >
             <Typography
                 level="h4"
                 fontSize={"2vw"}
@@ -67,7 +74,7 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
                 >{region}</Typography>
             </Typography>
 
-            <Grid container flex={1} spacing={5} height={'100%'}>
+            <Grid container flex={1} spacing={5} height={'100%'} direction={"column"}>
                 <Grid xs={12} >
                     <TableCustom
                         columns={columns.map((col, index) => ({ label: col, key: col, center: !!index }))}
@@ -82,16 +89,39 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
                     />
                 </Grid>
 
-                {/* <Grid xs={12} md={6} bgcolor={"white"}>
-                    <Bar
-                        data={chartData}
-                        options={{
-                            responsive: true,
-                            plugins: { legend: { position: "top" } },
-                            scales: { y: { beginAtZero: true } },
-                        }}
-                    />
-                </Grid> */}
+
+                <Grid xs={12} bgcolor={"white"} >
+                    {/* 
+                        <Bar
+                            data={chartData}
+                            options={{
+                                responsive: true,
+                                plugins: { legend: { position: "top" } },
+                                scales: { y: { beginAtZero: true } },
+                            }}
+                        /> */}
+                    <Marquee>
+                        <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} >
+
+                            {columns.map((col) => {
+                                if (col === "marche" || col === "date") return;
+                                const codeProduit = apiData.find((p) => p.produit === col)?.codeProduit
+                                if (!codeProduit) return;
+
+                                return (
+                                    <CardMedia
+                                        component={'img'}
+                                        src={getProduitImageUrl(codeProduit)}
+                                        sx={{ flex: 1, width: '6vw', objectFit: 'contain' }}
+                                    />
+                                )
+                            })}
+                        </Stack>
+
+                    </Marquee>
+                </Grid>
+
+
             </Grid>
         </Stack>
     );

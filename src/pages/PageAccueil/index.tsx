@@ -3,6 +3,7 @@ import { Stack, Typography, Box } from "@mui/joy";
 import { IMAGES, PARTENAIRE_IMAMGE } from "../../constant";
 import { CardMedia } from "@mui/material";
 import ChargeurDePage from "./ChargeurDePage";
+import Marquee from "react-fast-marquee";
 
 const PageAccueil: React.FC = () => {
     return (
@@ -16,7 +17,7 @@ const PageAccueil: React.FC = () => {
             height="100vh"
         >
             <ChargeurDePage />
-            
+
             <Stack direction="row" gap={'7vw'} justifyContent="center" alignContent={'center'} flexWrap="wrap">
                 <CardMedia
                     component="img"
@@ -44,17 +45,22 @@ const PageAccueil: React.FC = () => {
                 <Typography level="h4" fontSize="2vw" fontWeight="md" mb={2}>
                     Nos différents Partenaires
                 </Typography>
-                <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} flexWrap="wrap">
-                    {PARTENAIRE_IMAMGE.map((partenaire, index) => (
-                        <CardMedia
-                            component="img"
-                            src={partenaire}
-                            alt={`Partenaire ${index + 1}`}
-                            key={index}
-                            sx={{ width: '7vw', height: "auto", objectFit: 'contain' }}
-                        />
-                    ))}
-                </Stack>
+
+                <Marquee>
+
+                    <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} flexWrap="wrap">
+                        {PARTENAIRE_IMAMGE.map((partenaire, index) => (
+                            <CardMedia
+                                component="img"
+                                src={partenaire}
+                                alt={`Partenaire ${index + 1}`}
+                                key={index}
+                                sx={{ width: '7vw', height: "auto", objectFit: 'contain' }}
+                            />
+                        ))}
+                    </Stack>
+                </Marquee>
+
             </Box>
         </Stack>
     );
