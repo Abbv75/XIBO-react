@@ -31,6 +31,7 @@ export interface GET_ALL_VALIDATION_T {
   numeroEnqueteur: string;
   superviseur: string;
   precedent?: GET_ALL_VALIDATION_T;
+  codeProduit: string
 };
 
 export interface PAGE_T {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Typography, Grid, Stack } from "@mui/joy";
 import TableCustom from "../../components/TableCustome";
 import {
@@ -14,6 +14,8 @@ import { Bar } from "react-chartjs-2";
 import PageLooperContext from "../../providers/PageLooperContext";
 import getPrixMoyenProduitParRegion from "../../utils/getPrixMoyenProduitParRegion";
 import { green, grey } from "@mui/material/colors";
+import { CardMedia } from "@mui/material";
+import getProduitImageUrl from "../../utils/getProduitImageUrl";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -42,6 +44,8 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
         cacheMoyennes[produit] = moyennesParRegion;
     };
 
+    const codeProduit = useMemo(() => (apiData.find((p) => p.produit === produit)?.codeProduit), [apiData, produit])
+
     useEffect(() => {
         if (cacheMoyennes[produit]) {
             setMoyennes(cacheMoyennes[produit]);
@@ -61,7 +65,7 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
     }
 
     return (
-        <Stack sx={{ gap: 3, p: 3, height: "100%", }}>
+        <Stack sx={{ gap: 3, p: 3, }}>
             <Typography
                 level="h4"
                 fontSize={"2vw"}
@@ -76,7 +80,7 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                 par région
             </Typography>
 
-            <Grid container spacing={5} height={'100%'} alignItems="center" >
+            <Grid container spacing={5} >
                 <Grid xs={12} md={7}>
                     <TableCustom
                         columns={[
@@ -96,25 +100,33 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                     />
                 </Grid>
 
-                <Grid xs={12} md={5}>
-                    <Bar
-                        data={{
-                            labels: moyennes.map((m) => m.region),
-                            datasets: [
-                                {
-                                    label: `Prix moyen de ${produit}`,
-                                    data: moyennes.map((m) => m.moyenne),
-                                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                <Grid xs={12} md={5} height={'100%'} >
+                    <Stack height={'100%'} gap={2}  >
+                        <CardMedia
+                            component={'img'}
+                            src={getProduitImageUrl(codeProduit || '')}
+                            sx={{ flex:1, maxHeight:'40%' }}
+                        />
 
-                                },
-                            ],
-                        }}
-                        options={{
-                            responsive: true,
-                            plugins: { legend: { display: false } },
-                            scales: { y: { beginAtZero: true } },
-                        }}
-                    />
+                        <Bar
+                            data={{
+                                labels: moyennes.map((m) => m.region),
+                                datasets: [
+                                    {
+                                        label: `Prix moyen de ${produit}`,
+                                        data: moyennes.map((m) => m.moyenne),
+                                        backgroundColor: "rgba(54, 162, 235, 0.6)",
+
+                                    },
+                                ],
+                            }}
+                            options={{
+                                responsive: true,
+                                plugins: { legend: { display: false } },
+                                scales: { y: { beginAtZero: true } },
+                            }}
+                        />
+                    </Stack>
                 </Grid>
             </Grid>
         </Stack>
