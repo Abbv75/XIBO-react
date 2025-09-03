@@ -1,5 +1,5 @@
-import React from "react";
-import { Typography, Grid, Stack } from "@mui/joy";
+import React, { useContext, useMemo } from "react";
+import { Typography, Grid, Stack, Slider } from "@mui/joy";
 import { GET_ALL_VALIDATION_T } from "../../types";
 import TableCustom from "../../components/TableCustome";
 import {
@@ -14,6 +14,9 @@ import {
 import { green, grey, red } from "@mui/material/colors";
 import formatDateToDDMMYYYY from "../../utils/formatDateToDDMMYYYY";
 import { getPrixProduitMarcheParRegion } from "../../utils/getPrixProduitMarcheParRegion";
+import { CardMedia } from "@mui/material";
+import PageLooperContext from "../../providers/PageLooperContext";
+import getProduitImageUrl from "../../utils/getProduitImageUrl";
 
 ChartJS.register(
     CategoryScale,
@@ -35,6 +38,8 @@ const PageContentProduitRegion: React.FC<{
     region: string;
     data: MarcheCollectes[]; // La donnée reçue est un tableau de MarcheCollectes
 }> = ({ produit, region, data }) => {
+    const { apiData } = useContext(PageLooperContext);
+
     // Utiliser la fonction utilitaire pour traiter les données et obtenir les informations nécessaires
     const processedData = getPrixProduitMarcheParRegion(data);
 
@@ -84,6 +89,9 @@ const PageContentProduitRegion: React.FC<{
         },
     ];
 
+    const codeProduit = useMemo(() => (apiData.find((p) => p.produit === produit)?.codeProduit), [apiData, produit])
+
+
     return (
         <Stack sx={{ gap: 3, p: 3, }} height={'100%'}>
             <Typography
@@ -105,12 +113,12 @@ const PageContentProduitRegion: React.FC<{
                 >{region}</Typography>
             </Typography>
 
-            <Grid container spacing={5} height={'100%'} flex={1} alignItems="center">
-                <Grid xs={12}>
+            <Grid container spacing={5} height={'100%'} flex={1} >
+                <Grid xs={12} md={9}>
                     <TableCustom
                         columns={[
                             { label: "#", key: "label" },
-                            ...marches.map((m) => ({ label: m, key: m, center : true })),
+                            ...marches.map((m) => ({ label: m, key: m, center: true })),
                         ]}
                         data={tableRows.map((row) => {
                             if (row === 'gap') {
@@ -125,6 +133,14 @@ const PageContentProduitRegion: React.FC<{
                             });
                             return obj;
                         })}
+                    />
+                </Grid>
+
+                <Grid xs={12} md={3}  >
+                    <CardMedia 
+                        component={'img'}
+                        src={getProduitImageUrl(codeProduit || '')}
+                        // sx={{ flex:1, maxHeight:'40%' }}
                     />
                 </Grid>
             </Grid>
