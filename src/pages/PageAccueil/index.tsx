@@ -17,31 +17,31 @@ const PageAccueil: React.FC = () => {
         >
             <ChargeurDePage />
             
-            <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} flexWrap="wrap">
+            <Stack direction="row" gap={'7vw'} justifyContent="center" alignContent={'center'} flexWrap="wrap">
                 <CardMedia
                     component="img"
                     src={IMAGES.logo} // Remplacer par le chemin réel de ton logo
                     alt="Logo SIMRO Cameroun"
-                    sx={{ width: 200, height: "auto", objectFit: 'contain' }}
+                    sx={{ width: '10vw', height: "auto", objectFit: 'contain' }}
                 />
                 <CardMedia
                     component="img"
                     src={IMAGES.logo_padfa} // Remplacer par le chemin réel de ton logo
                     alt="Logo SIMRO Cameroun"
-                    sx={{ width: 200, height: "auto", objectFit: 'contain' }}
+                    sx={{ width: '10vw', height: "auto", objectFit: 'contain' }}
                 />
             </Stack>
 
-            <Typography level="h2" fontSize="2.5vw" fontWeight="lg">
+            <Typography level="h2" fontSize="3vw" fontWeight="lg">
                 SIMRO Cameroun
             </Typography>
-            <Typography level="h4" fontSize="1.5vw" fontWeight="md">
+            <Typography level="h4" fontSize="2.5vw" fontWeight="md">
                 Système d'Information sur les Marchés du Riz et de l'Oignon du Cameroun
             </Typography>
 
             {/* Liste des partenaires */}
             <Box sx={{ mt: 5 }}>
-                <Typography level="h4" fontWeight="md" mb={2}>
+                <Typography level="h4" fontSize="2vw" fontWeight="md" mb={2}>
                     Nos différents Partenaires
                 </Typography>
                 <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} flexWrap="wrap">
@@ -51,7 +51,7 @@ const PageAccueil: React.FC = () => {
                             src={partenaire}
                             alt={`Partenaire ${index + 1}`}
                             key={index}
-                            sx={{ width: 120, height: "auto", objectFit: 'contain' }}
+                            sx={{ width: '7vw', height: "auto", objectFit: 'contain' }}
                         />
                     ))}
                 </Stack>

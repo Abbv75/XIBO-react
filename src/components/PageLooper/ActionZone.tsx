@@ -46,23 +46,22 @@ const ActionZone = () => {
         < Sheet
             variant="soft"
             sx={{
-                position: "fixed", bottom: 10,
+                position: "fixed", bottom: '1vw',
                 left: "50%",
                 transform: "translateX(-50%)",
                 display: "flex",
-                gap: 3,
-                px: 3,
-                py: 2,
+                gap: '2vw',
+                p: '1vw',
                 borderRadius: "md",
                 boxShadow: "sm",
                 zIndex: 1000
             }}
         >
-            <Typography level="body-md"><FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab</Typography>
-            <Typography level="body-md"><FontAwesomeIcon icon={faArrowLeft} /> Précédent</Typography>
-            <Typography level="body-md"><FontAwesomeIcon icon={faArrowRight} /> Suivant</Typography>
-            <Typography level="body-md"><FontAwesomeIcon icon={faArrowUp} /> Dernière</Typography>
-            <Typography level="body-md"><FontAwesomeIcon icon={faArrowDown} /> Première</Typography>
+            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab</Typography>
+            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowLeft} /> Précédent</Typography>
+            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowRight} /> Suivant</Typography>
+            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowUp} /> Dernière</Typography>
+            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowDown} /> Première</Typography>
         </Sheet >
     )
 }

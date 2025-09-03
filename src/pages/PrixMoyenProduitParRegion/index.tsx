@@ -105,6 +105,7 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                                     label: `Prix moyen de ${produit}`,
                                     data: moyennes.map((m) => m.moyenne),
                                     backgroundColor: "rgba(54, 162, 235, 0.6)",
+
                                 },
                             ],
                         }}

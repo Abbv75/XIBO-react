@@ -11,7 +11,7 @@ import { green } from "@mui/material/colors";
 interface Column {
     label: string;
     key: string;
-    center ?: boolean; 
+    center?: boolean;
 }
 
 interface TableCustomProps {
@@ -37,6 +37,8 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
                                 fontWeight: "bold",
                                 textTransform: "uppercase",
                                 fontSize: '1.5vw',
+                                paddingY: '1vw',
+                                paddingX: '1vw',
                             }}
                             align={col.center ? "center" : "left"}
                         >{col.label}</TableCell>
@@ -47,7 +49,7 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
 
                 {data.map((row, idx) => row == 'gap'
                     ? (
-                        <TableRow sx={{ p: 20 }} children={<TableCell sx={{ border: 0 }} />} />
+                        <TableRow sx={{ p: 10 }} children={<TableCell sx={{ border: 0 }} />} />
                     )
                     : (
                         <TableRow
@@ -64,8 +66,8 @@ const TableCustom: React.FC<TableCustomProps> = ({ columns, data }) => {
                                     key={col.key}
                                     sx={{
                                         fontSize: "1.2vw",
-                                        paddingY: 1.5,
-                                        paddingX: 2,
+                                        paddingY: '0.5vw',
+                                        paddingX: '1vw',
                                     }}
                                     align={col.center ? "center" : "left"}
                                 >{row[col.key]}</TableCell>
