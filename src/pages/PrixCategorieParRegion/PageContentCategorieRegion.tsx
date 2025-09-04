@@ -11,8 +11,6 @@ import {
     Legend,
 } from "chart.js";
 import { green, grey, red } from "@mui/material/colors";
-import { Bar } from "react-chartjs-2";
-import Marquee from "react-fast-marquee";
 import { CardMedia } from "@mui/material";
 import PageLooperContext from "../../providers/PageLooperContext";
 import getProduitImageUrl from "../../utils/getProduitImageUrl";
@@ -25,7 +23,6 @@ ChartJS.register(
     Tooltip,
     Legend
 );
-
 
 interface PageContentCategorieRegionProps {
     categorie: string;
@@ -40,88 +37,86 @@ const PageContentCategorieRegion: React.FC<PageContentCategorieRegionProps> = ({
     columns,
     data,
 }) => {
-    const { apiData } = useContext(PageLooperContext)
+    const { apiData } = useContext(PageLooperContext);
 
-    // Préparer les données pour le graphique : chaque produit = dataset
-    const produitColumns = columns.filter((c) => c !== "marche" && c !== "date");
-    const chartData = {
-        labels: data.map((row) => row.marche),
-        datasets: produitColumns.map((prod, idx) => ({
-            label: prod,
-            data: data.map((row) => Number(row[prod]) || 0),
-            backgroundColor: `hsla(${(idx * 50) % 360}, 70%, 50%, 0.6)`,
-        })),
-    };
+    // Construire une ligne spéciale pour les images
+    const imageRow = Object.fromEntries(
+        columns.map((col) => {
+            if (col === "marche" || col === "date") {
+                return [col, ""]; // pas d'image ici
+            }
+            const codeProduit = apiData.find((p) => p.produit === col)?.codeProduit;
+            return [
+                col,
+                codeProduit ? (
+                    <CardMedia
+                        key={col}
+                        component="img"
+                        src={getProduitImageUrl(codeProduit)}
+                        sx={{ width: "4vw", height: "4vw", objectFit: "contain", margin: "auto" }}
+                    />
+                ) : "-",
+            ];
+        })
+    );
+
+    // Lignes du tableau (on insère d'abord la ligne des images)
+    const tableRows = [
+        { ...imageRow, marche: " ", date: " " }, // ligne images
+        ...data.map((row: any) =>
+            Object.fromEntries(
+                columns.map((col) => [
+                    col,
+                    col === "marche" ? (
+                        row[col]
+                    ) : (
+                        <b>
+                            {col === "date"
+                                ? row[col]
+                                : row[col] == null || row[col] === "" // null, undefined, vide
+                                    ? ""
+                                    : row[col] < 0 // négatif → juste "-"
+                                        ? "-"
+                                        : row[col] > 0 // positif → valeur formatée
+                                            ? `${row[col].toLocaleString()} FCFA`
+                                            : "-"} {/* 0 → vide */}
+                        </b>
+                    ),
+                ])
+            )
+        ),
+    ];
+
 
     return (
-        <Stack sx={{ gap: 3, p: 3, }} >
+        <Stack sx={{ gap: 3, p: 3 }}>
             <Typography
                 level="h4"
                 fontSize={"2vw"}
                 textColor={grey[700]}
                 fontWeight={300}
             >
-                Prix des produits de la catégorie
-                {` `}<Typography
-                    fontWeight={700}
-                    textColor={green[900]}
-                >"{categorie}"</Typography> {` `}
-                dans la région de
-                {` `}
-                <Typography
-                    fontWeight={700}
-                    textColor={red[900]}
-                >{region}</Typography>
+                Prix des produits de la catégorie{" "}
+                <Typography fontWeight={700} textColor={green[900]}>
+                    "{categorie}"
+                </Typography>{" "}
+                dans la région de{" "}
+                <Typography fontWeight={700} textColor={red[900]}>
+                    {region}
+                </Typography>
             </Typography>
 
-            <Grid container flex={1} spacing={5} height={'100%'} direction={"column"}>
-                <Grid xs={12} >
+            <Grid container flex={1} spacing={5} height={"100%"} direction={"column"}>
+                <Grid xs={12}>
                     <TableCustom
-                        columns={columns.map((col, index) => ({ label: col, key: col, center: !!index }))}
-                        data={data.map((row) =>
-                            Object.fromEntries(
-                                columns.map((col) => [
-                                    col,
-                                    col === "marche" || col === "date" ? row[col] : row[col] ? `${row[col].toLocaleString()} FCFA` : "-",
-                                ])
-                            )
-                        )}
+                        columns={columns.map((col, index) => ({
+                            label: col,
+                            key: col,
+                            center: !!index,
+                        }))}
+                        data={tableRows}
                     />
                 </Grid>
-
-
-                <Grid xs={12} bgcolor={"white"} >
-                    {/* 
-                        <Bar
-                            data={chartData}
-                            options={{
-                                responsive: true,
-                                plugins: { legend: { position: "top" } },
-                                scales: { y: { beginAtZero: true } },
-                            }}
-                        /> */}
-                    <Marquee>
-                        <Stack direction="row" spacing={4} justifyContent="center" alignContent={'center'} >
-
-                            {columns.map((col) => {
-                                if (col === "marche" || col === "date") return;
-                                const codeProduit = apiData.find((p) => p.produit === col)?.codeProduit
-                                if (!codeProduit) return;
-
-                                return (
-                                    <CardMedia
-                                        component={'img'}
-                                        src={getProduitImageUrl(codeProduit)}
-                                        sx={{ flex: 1, width: '6vw', objectFit: 'contain' }}
-                                    />
-                                )
-                            })}
-                        </Stack>
-
-                    </Marquee>
-                </Grid>
-
-
             </Grid>
         </Stack>
     );

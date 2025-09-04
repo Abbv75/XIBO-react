@@ -17,7 +17,7 @@ const ActionZone = () => {
         setIsPlaying,
         pages,
         nextPage,
-        setCurrentIndex
+        setCurrentIndex,
     } = useContext(PageLooperContext);
 
     const prevPage = () => setCurrentIndex((prev: number) => (prev === 0 ? pages.length - 1 : prev - 1));
@@ -57,11 +57,37 @@ const ActionZone = () => {
                 zIndex: 1000
             }}
         >
-            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab</Typography>
-            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowLeft} /> Précédent</Typography>
-            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowRight} /> Suivant</Typography>
-            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowUp} /> Dernière</Typography>
-            <Typography level="body-md" textAlign={'center'} fontSize={'1vw'}><FontAwesomeIcon icon={faArrowDown} /> Première</Typography>
+            <Typography
+                level="body-md"
+                textAlign={'center'}
+                fontSize={'1vw'}
+                onClick={() => setIsPlaying(p => !p)}
+            ><FontAwesomeIcon icon={isPlaying ? faPause : faPlay} /> Tab</Typography>
+            <Typography
+                level="body-md"
+                textAlign={'center'}
+                fontSize={'1vw'}
+                onClick={() => prevPage()}
+            ><FontAwesomeIcon icon={faArrowLeft} /> Précédent</Typography>
+            <Typography
+                level="body-md"
+                textAlign={'center'}
+                fontSize={'1vw'}
+                onClick={() => nextPage()}
+            ><FontAwesomeIcon icon={faArrowRight} /> Suivant</Typography>
+            <Typography
+                level="body-md"
+                textAlign={'center'}
+                fontSize={'1vw'}
+                onClick={() => lastPage()}
+            ><FontAwesomeIcon icon={faArrowUp} /> Dernière</Typography>
+            <Typography
+                level="body-md"
+                textAlign={'center'}
+                fontSize={'1vw'}
+                onClick={() => firstPage()}
+
+            ><FontAwesomeIcon icon={faArrowDown} /> Première</Typography>
         </Sheet >
     )
 }

@@ -7,7 +7,7 @@ export default createContext({} as {
     setCurrentIndex: USE_STATE_T,
     cacheMoyennes: { [produit: string]: any },
     apiData: GET_ALL_VALIDATION_T[],
-    isPlaying: boolean, setIsPlaying: USE_STATE_T
+    isPlaying: boolean, setIsPlaying: USE_STATE_T<boolean>
     nextPage: () => void
 
 })
