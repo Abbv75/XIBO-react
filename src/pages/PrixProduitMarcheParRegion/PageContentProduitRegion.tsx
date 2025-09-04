@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from "react";
-import { Typography, Grid, Stack, Slider } from "@mui/joy";
+import { Typography, Grid, Stack, Slider, Divider } from "@mui/joy";
 import { GET_ALL_VALIDATION_T } from "../../types";
 import TableCustom from "../../components/TableCustome";
 import {
@@ -129,7 +129,7 @@ const PageContentProduitRegion: React.FC<{
                             const obj: any = { label: row.label };
                             //@ts-ignore
                             row.values.forEach((v, i) => {
-                                obj[marches[i]] = v;
+                                obj[marches[i]] = <b>{v}</b>;
                             });
                             return obj;
                         })}
@@ -137,12 +137,69 @@ const PageContentProduitRegion: React.FC<{
                 </Grid>
 
                 <Grid xs={12} md={3}  >
-                    <CardMedia 
+                    <CardMedia
                         component={'img'}
                         src={getProduitImageUrl(codeProduit || '')}
-                        // sx={{ flex:1, maxHeight:'40%' }}
+                    // sx={{ flex:1, maxHeight:'40%' }}
                     />
+
+                    <Stack
+                        mt={2}
+                    >
+                        <Typography level="h3" fontSize={"1.5vw"}>
+                            Points à retenir :
+                        </Typography>
+
+                        <Divider
+                            sx={{
+                                width: 50,
+                                height: 10,
+                                borderRadius: 50,
+                                bgcolor: green[800]
+                            }}
+                        />
+
+                        <Stack
+                            component="ul"
+                            mt={2}
+                            fontSize="0.9vw"
+                            gap={1}
+                        >
+                            {processedData.length > 1 && (
+                                <li>
+                                    Le prix de l'oignon est relativement plus bas dans le marché de{" "}
+                                    {
+                                        processedData.reduce((prev, cur) =>
+                                            cur?.prixActuel !== null && cur?.prixActuel < (prev?.prixActuel ?? Infinity) ? cur : prev
+                                        ).marche
+                                    }.
+                                </li>
+                            )}
+
+                            {processedData.map((p, i) => {
+                                if (p.prixActuel === null || p.prixPrecedent === null) return null;
+
+                                const difference = p.prixActuel - p.prixPrecedent;
+                                const tendance = difference > 0 ? "augmenté" : difference < 0 ? "diminué" : "resté stable";
+                                const valeurAbs = Math.abs(difference).toFixed(0).toLocaleString();
+
+                                return (
+                                    <li key={i}>
+                                        Dans le <b>{p.marche}</b>,
+                                        {p.nbrCollecteActuel && p.nbrCollecteActuel > 1
+                                            ? <> sur une collecte dans <b>{p.nbrCollecteActuel}</b> marchés, </>
+                                            : " "}
+                                        le produit <b>{produit}</b> a vu son prix {tendance}
+                                        {difference !== 0 && <> de <b>{valeurAbs} FCFA</b></>}
+                                        par rapport à la dernière collecte du{" "}
+                                        <b>{formatDateToDDMMYYYY(p.datePrecedente)}</b>.
+                                    </li>
+                                );
+                            })}
+                        </Stack>
+                    </Stack>
                 </Grid>
+
             </Grid>
         </Stack>
     );
