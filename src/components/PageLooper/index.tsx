@@ -83,7 +83,7 @@ const PageLooper = () => {
             {/* Affichage de la page courante */}
             <Stack
                 width={'100%'}
-                gap={'1vw'}
+                // gap={'1vw'}
                 height={'100vh'}
             >
                 {pages[currentIndex].id != 'accueil' && (<Header />)}

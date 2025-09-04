@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { Typography, Grid, Stack } from "@mui/joy";
+import { Typography, Grid, Stack, Divider, List } from "@mui/joy";
 import TableCustom from "../../components/TableCustome";
 import {
     Chart as ChartJS,
@@ -32,6 +32,8 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
 
     const [loading, setLoading] = useState(true);
     const [moyennes, setMoyennes] = useState<ProduitMoyenne[]>([]);
+    const [moyenneMin, setmoyenneMin] = useState<ProduitMoyenne>();
+    const [moyenneMax, setmoyenneMax] = useState<ProduitMoyenne>();
 
     const loadData = async () => {
         const res = apiData.filter((p) => p.produit === produit);
@@ -55,6 +57,13 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
 
         loadData();
     }, [produit, cacheMoyennes]);
+
+    useEffect(() => {
+        if (moyennes.length) {
+            setmoyenneMin(moyennes.reduce((prev, curr) => (prev.moyenne < curr.moyenne ? prev : curr)));
+            setmoyenneMax(moyennes.reduce((prev, curr) => (prev.moyenne > curr.moyenne ? prev : curr)));
+        }
+    }, [moyennes]);
 
     if (loading) {
         return (
@@ -80,7 +89,7 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                 par région
             </Typography>
 
-            <Grid container spacing={5} >
+            <Grid container spacing={5} alignItems={'flex-start'} >
                 <Grid xs={12} md={7}>
                     <TableCustom
                         columns={[
@@ -92,42 +101,99 @@ const PrixMoyenProduitParRegion: React.FC<{ produit: string }> = ({ produit }) =
                         ]}
                         data={moyennes.map((m) => ({
                             region: m.region,
-                            moyenne: `${m.moyenne.toFixed(2)} FCFA`,
-                            minimum: `${m.min.toFixed(2)} FCFA`,
-                            maximum: `${m.max.toFixed(2)} FCFA`,
-                            nbMarches: m.nbMarches,
+                            moyenne: <><b>{m.moyenne.toFixed(2)}</b> FCFA</>,
+                            minimum: <><b>{m.min.toFixed(2)}</b> FCFA</>,
+                            maximum: <><b>{m.max.toFixed(2)}</b> FCFA</>,
+                            nbMarches: <b>{m.nbMarches}</b>,
                         }))}
                     />
                 </Grid>
 
-                <Grid xs={12} md={5} height={'100%'} >
-                    <Stack height={'100%'} gap={2}  >
-                        <CardMedia
-                            component={'img'}
-                            src={getProduitImageUrl(codeProduit || '')}
-                            sx={{ flex:1, maxHeight:'40%' }}
-                        />
+                <Grid xs={12} md={5}>
+                    <CardMedia
+                        component={'img'}
+                        src={getProduitImageUrl(codeProduit || '')}
+                        sx={{ flex: 1, maxHeight: '30vh' }}
+                    />
+                </Grid>
 
-                        <Bar
-                            data={{
-                                labels: moyennes.map((m) => m.region),
-                                datasets: [
-                                    {
-                                        label: `Prix moyen de ${produit}`,
-                                        data: moyennes.map((m) => m.moyenne),
-                                        backgroundColor: "rgba(54, 162, 235, 0.6)",
+                <Grid xs={12} md={7} >
+                    <Typography level="h3" fontSize={"1.5vw"}>
+                        Point à retenir:
+                    </Typography>
 
-                                    },
-                                ],
-                            }}
-                            options={{
-                                responsive: true,
-                                plugins: { legend: { display: false } },
-                                scales: { y: { beginAtZero: true } },
-                            }}
-                        />
+                    <Divider
+                        sx={{
+                            width: 50,
+                            height: 10,
+                            borderRadius: 50,
+                            bgcolor: green[800]
+                        }}
+                    />
+
+                    <Stack
+                        component={'ul'}
+                        mt={2}
+                        fontSize={'0.9vw'}
+                        gap={1}
+                    >
+                        <li>
+                            Le prix de
+                            <b>{` `}{produit}{` `}</b>
+                            est généralement moins chère dans la région du
+                            <b>{` `}{moyenneMin?.region}{` `}</b>
+                            et plus élévé dans la région du
+                            <b>{` `}{moyenneMax?.region}</b>.
+                        </li>
+                        {moyennes.map(m => (
+                            <li>
+                                En
+                                <b>{` `}{m.region}</b>
+                                , avec des collectes dans
+                                <b>{` `}{m.nbMarches}{` `}</b>
+                                marché
+                                <b>{` `}{m.nbMarches > 1 && 's'}</b>,
+                                le prix de
+                                <b>{` `}{produit}{` `}</b>
+                                {
+                                    m.min == m.max
+                                        ? <span>
+                                            est rélativement stable. Elle est de
+                                            {` `}<b>{m.min}</b>
+                                        </span>
+                                        : <span>
+                                            varie entre
+                                            {` `}<b>{m.min} FCFA</b>{` `}
+                                            à
+                                            {` `}<b>{m.max} FCFA</b>{` `}
+                                        </span>
+                                }
+                            </li>
+                        ))}
                     </Stack>
                 </Grid>
+
+                <Grid xs={12} md={5}>
+                    <Bar
+                        data={{
+                            labels: moyennes.map((m) => m.region),
+                            datasets: [
+                                {
+                                    label: `Prix moyen de ${produit}`,
+                                    data: moyennes.map((m) => m.moyenne),
+                                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+
+                                },
+                            ],
+                        }}
+                        options={{
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true } },
+                        }}
+                    />
+                </Grid>
+
             </Grid>
         </Stack>
     );
