@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/php_files/simroXibo/static/css/main.1dde9b24.css",
-    "main.js": "/php_files/simroXibo/static/js/main.7614eda8.js",
+    "main.js": "/php_files/simroXibo/static/js/main.adbfbd7a.js",
     "static/js/453.de539f60.chunk.js": "/php_files/simroXibo/static/js/453.de539f60.chunk.js",
     "index.html": "/php_files/simroXibo/index.html",
     "main.1dde9b24.css.map": "/php_files/simroXibo/static/css/main.1dde9b24.css.map",
-    "main.7614eda8.js.map": "/php_files/simroXibo/static/js/main.7614eda8.js.map",
+    "main.adbfbd7a.js.map": "/php_files/simroXibo/static/js/main.adbfbd7a.js.map",
     "453.de539f60.chunk.js.map": "/php_files/simroXibo/static/js/453.de539f60.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1dde9b24.css",
-    "static/js/main.7614eda8.js"
+    "static/js/main.adbfbd7a.js"
   ]
 }
